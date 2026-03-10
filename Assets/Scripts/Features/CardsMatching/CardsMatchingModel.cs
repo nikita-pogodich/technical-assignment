@@ -186,6 +186,7 @@ namespace Features.CardsMatching
                 else
                 {
                     CardModel[] cardsToReset = _flippedCards.ToArray();
+                    _matchedCards.Clear();
                     _flippedCards.Clear();
                     ResetCardsAsync(cardsToReset).Forget();
                     return;

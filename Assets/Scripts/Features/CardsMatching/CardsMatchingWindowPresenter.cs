@@ -74,6 +74,7 @@ namespace Features.CardsMatching
             {
                 case GameState.CardsCreation:
                     CreateCardsAsync().Forget();
+                    View.SetStageIndex(Model.CurrentStageIndex);
                     break;
                 case GameState.Remembering:
                     View.SetAllCardsFilled(true);

@@ -41,6 +41,8 @@ namespace Features.CardsMatching
         public async UniTask<IWindowPresenter> CreateAsync()
         {
             var view = await _windowViewProvider.GetAsync<ICardsMatchingWindow>(ViewName, WindowType.Main);
+            view.InjectDependencies(_localSettings);
+
             var presenter = new CardsMatchingWindowPresenter(
                 _localSettings,
                 _viewProvider,

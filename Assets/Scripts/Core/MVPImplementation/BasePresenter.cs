@@ -40,6 +40,11 @@ namespace Core.MVPImplementation
                 childPresenter.Deinit();
             }
 
+            if (View != null)
+            {
+                View.Deinit();
+            }
+
             _childPresenters.Clear();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.ModelProvider;
 using Core.MVPImplementation;
+using Core.SaveSystem;
 using Cysharp.Threading.Tasks;
 using R3;
 using Settings;
@@ -13,6 +14,7 @@ namespace Features.CardsMatching
     {
         private readonly ILocalSettings _localSettings;
         private readonly IModelProvider _modelProvider;
+        private readonly ISaveSystem _saveSystem;
 
         private readonly ReactiveProperty<GameState> _currentGameState = new();
         private readonly ReactiveProperty<int> _currentScore = new();
@@ -37,10 +39,12 @@ namespace Features.CardsMatching
         public CardsMatchingModel(
             ILocalSettings localSettings,
             IModelProvider modelProvider,
+            ISaveSystem saveSystem,
             int uniqueId) : base(uniqueId)
         {
             _localSettings = localSettings;
             _modelProvider = modelProvider;
+            _saveSystem = saveSystem;
         }
 
         protected override UniTask OnInit()
@@ -69,12 +73,22 @@ namespace Features.CardsMatching
             StartNextStage();
         }
 
+        public void ContinueGame()
+        {
+            _saveSystem.TryLoad(_localSettings.GameSettings.AutoSaveSlotName, out CardMatchingSaveData saveData);
+            _currentScore.Value = saveData.Score;
+            CurrentStageIndex = saveData.StageIndex;
+            StartNextStage();
+        }
+
         public void StartNextStage()
         {
             if (CurrentStageIndex + 1 >= _localSettings.GameSettings.StageSettings.Count)
             {
                 return;
             }
+
+            SaveGame();
 
             CurrentStageIndex++;
 
@@ -98,6 +112,12 @@ namespace Features.CardsMatching
                 cancellationToken: _cancellationTokenSource.Token);
 
             _currentGameState.Value = GameState.Matching;
+        }
+
+        private void SaveGame()
+        {
+            var cardMatchingSaveData = new CardMatchingSaveData(CurrentStageIndex, _currentScore.Value);
+            _saveSystem.Save(_localSettings.GameSettings.AutoSaveSlotName, cardMatchingSaveData);
         }
 
         private void StartStage(StageSetting stageSetting)

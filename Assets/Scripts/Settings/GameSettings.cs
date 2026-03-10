@@ -19,6 +19,12 @@ namespace Settings
         [field: SerializeField]
         public int MismatchScorePenalty { get; private set; } = 10;
 
+        [field: SerializeField]
+        public string SavesFolderName { get; private set; } = "Saves";
+
+        [field: SerializeField]
+        public string AutoSaveSlotName { get; private set; } = "Slot_1";
+
         [SerializeField]
         private StagesSettings _stagesSettings;
 

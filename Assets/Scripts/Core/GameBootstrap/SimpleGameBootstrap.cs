@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Core.ModelProvider;
+using Core.SaveSystem;
 using Cysharp.Threading.Tasks;
 using Features.CardsMatching;
 using Features.MainMenu;
@@ -23,6 +24,7 @@ namespace Core.GameBootstrap
         private ViewProvider.ViewProvider _viewProvider;
         private WindowViewProvider.WindowViewProvider _windowViewProvider;
         private CardsMatchingModel _cardsMatchingModel;
+        private ISaveSystem _saveSystem;
 
         private void Start()
         {
@@ -40,6 +42,12 @@ namespace Core.GameBootstrap
 
         private async UniTaskVoid InitAsync()
         {
+            string savePath = System.IO.Path.Combine(
+                Application.persistentDataPath,
+                _localSettings.GameSettings.SavesFolderName);
+
+            _saveSystem = new JsonSlotSaveSystem(savePath, new NewtonsoftJsonSerializer());
+
             await InitResourcesManager();
             InitViewProvider();
             await InitWindowViewProvider();
@@ -59,6 +67,7 @@ namespace Core.GameBootstrap
             _cardsMatchingModel = new CardsMatchingModel(
                 _localSettings,
                 _modelProvider,
+                _saveSystem,
                 _modelProvider.GetUniqueId());
 
             _cardsMatchingModel.InitAsync().Forget();
@@ -68,6 +77,7 @@ namespace Core.GameBootstrap
                 _modelProvider,
                 _localSettings,
                 _windowManager,
+                _saveSystem,
                 _cardsMatchingModel);
 
             _windowManager.RegisterWindowFactory(mainMenuWindowFactory);

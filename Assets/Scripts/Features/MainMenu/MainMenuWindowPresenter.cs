@@ -1,4 +1,5 @@
 ﻿using Core.MVPImplementation;
+using Core.SaveSystem;
 using Core.WindowManager;
 using Cysharp.Threading.Tasks;
 using Features.CardsMatching;
@@ -13,13 +14,16 @@ namespace Features.MainMenu
     {
         private readonly ILocalSettings _localSettings;
         private readonly IWindowManager _windowManager;
+        private readonly ISaveSystem _saveSystem;
         private readonly CardsMatchingModel _cardsMatchingModel;
 
         public MainMenuWindowPresenter(
             ILocalSettings localSettings,
             IWindowManager windowManager,
+            ISaveSystem saveSystem,
             CardsMatchingModel cardsMatchingModel)
         {
+            _saveSystem = saveSystem;
             _localSettings = localSettings;
             _windowManager = windowManager;
             _cardsMatchingModel = cardsMatchingModel;
@@ -34,7 +38,8 @@ namespace Features.MainMenu
 
         protected override void OnShow()
         {
-            View.SetContinueButtonShown(false);
+            bool hasAnySaveFiles = _saveSystem.SlotExists(_localSettings.GameSettings.AutoSaveSlotName);
+            View.SetContinueButtonShown(hasAnySaveFiles);
         }
 
         private void OnNewGame(Unit _)
@@ -59,6 +64,10 @@ namespace Features.MainMenu
             }
 
             SetShown(false);
+
+            _cardsMatchingModel.ContinueGame();
+            _windowManager.ShowWindowAsync<ICardsMatchingWindow, CardsMatchingModel>(
+                _localSettings.ViewNames.CardsMatchingWindow).Forget();
         }
 
         private void OnExitGame(Unit _)

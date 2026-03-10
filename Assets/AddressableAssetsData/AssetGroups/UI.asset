@@ -169,6 +169,14 @@ MonoBehaviour:
     m_Address: Card_Icon_7
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 447c413349286864d849742e2a0d024e
+    m_Address: CardsMatchingWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 115f9062157687d408ef264cff50f58b
+    m_Address: CardView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b80bf93a8c68cbe40943a2f12e80492d, type: 2}
   m_SchemaSet:

@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using Core.ModelProvider;
 using Cysharp.Threading.Tasks;
+using Features.CardsMatching;
 using Features.MainMenu;
 using Settings;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Core.GameBootstrap
         private CancellationTokenSource _destroyCancellationTokenSource = new();
         private ViewProvider.ViewProvider _viewProvider;
         private WindowViewProvider.WindowViewProvider _windowViewProvider;
+        private CardsMatchingModel _cardsMatchingModel;
 
         private void Start()
         {
@@ -32,6 +34,7 @@ namespace Core.GameBootstrap
             _destroyCancellationTokenSource.Dispose();
             _destroyCancellationTokenSource = null;
             _windowManager.Dispose();
+            _cardsMatchingModel?.Deinit();
         }
 
         private async UniTaskVoid InitAsync()
@@ -52,12 +55,31 @@ namespace Core.GameBootstrap
 
         private void RegisterWindowFactories()
         {
+            _cardsMatchingModel = new CardsMatchingModel(
+                _localSettings,
+                _modelProvider,
+                _modelProvider.GetUniqueId());
+
+            _cardsMatchingModel.InitAsync().Forget();
+
             var mainMenuWindowFactory = new MainMenuWindowFactory(
                 _windowViewProvider,
                 _modelProvider,
-                _localSettings);
+                _localSettings,
+                _windowManager,
+                _cardsMatchingModel);
 
             _windowManager.RegisterWindowFactory(mainMenuWindowFactory);
+
+            var cardsMatchingWindowFactory = new CardsMatchingWindowFactory(
+                _windowViewProvider,
+                _localSettings,
+                _viewProvider,
+                _windowManager,
+                _resourcesManager,
+                _cardsMatchingModel);
+
+            _windowManager.RegisterWindowFactory(cardsMatchingWindowFactory);
         }
 
         private async UniTask InitResourcesManager()

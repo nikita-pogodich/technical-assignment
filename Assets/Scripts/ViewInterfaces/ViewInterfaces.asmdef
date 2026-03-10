@@ -2,7 +2,8 @@
     "name": "ViewInterfaces",
     "rootNamespace": "",
     "references": [
-        "GUID:69e55f2bea839c44285ad561b95502ac"
+        "GUID:69e55f2bea839c44285ad561b95502ac",
+        "GUID:414a336b33557eb4cac7238449cd7fd3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

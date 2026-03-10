@@ -17,5 +17,64 @@ MonoBehaviour:
     <GameHUDWindow>k__BackingField: GameHUDWindow
     <LoseWindow>k__BackingField: LoseWindow
     <ConfirmationWindow>k__BackingField: ConfirmationWindow
+    <CardView>k__BackingField: CardView
+    <CardsMatchingWindow>k__BackingField: CardsMatchingWindow
   _resourceNames:
     <WindowRoots>k__BackingField: WindowRoots
+  _gameSettings:
+    <CardResourceKeys>k__BackingField:
+    - Card_Icon_1
+    - Card_Icon_2
+    - Card_Icon_3
+    - Card_Icon_4
+    - Card_Icon_5
+    - Card_Icon_6
+    - Card_Icon_7
+    - Card_Icon_8
+    - Card_Icon_9
+    - Card_Icon_10
+    - Card_Icon_11
+    - Card_Icon_12
+    - Card_Icon_13
+    - Card_Icon_14
+    - Card_Icon_15
+    - Card_Icon_16
+    - Card_Icon_17
+    - Card_Icon_18
+    - Card_Icon_19
+    - Card_Icon_20
+    - Card_Icon_21
+    - Card_Icon_22
+    - Card_Icon_23
+    - Card_Icon_24
+    - Card_Icon_25
+    - Card_Icon_26
+    - Card_Icon_27
+    - Card_Icon_28
+    - Card_Icon_29
+    - Card_Icon_30
+    - Card_Icon_31
+    - Card_Icon_32
+    - Card_Icon_33
+    - Card_Icon_34
+    - Card_Icon_35
+    - Card_Icon_36
+    <StageSettings>k__BackingField:
+    - <CardsToMatch>k__BackingField: 2
+      <CardsAmount>k__BackingField: 4
+      <AttemptsAmount>k__BackingField: 100
+      <TimeToRememberCardsSeconds>k__BackingField: 3
+      <GridWidth>k__BackingField: 740
+      <CardSize>k__BackingField: {x: 254, y: 354}
+    - <CardsToMatch>k__BackingField: 2
+      <CardsAmount>k__BackingField: 6
+      <AttemptsAmount>k__BackingField: 100
+      <TimeToRememberCardsSeconds>k__BackingField: 3
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 254, y: 354}
+    - <CardsToMatch>k__BackingField: 2
+      <CardsAmount>k__BackingField: 8
+      <AttemptsAmount>k__BackingField: 100
+      <TimeToRememberCardsSeconds>k__BackingField: 3
+      <GridWidth>k__BackingField: 1080
+      <CardSize>k__BackingField: {x: 211.6667, y: 295}

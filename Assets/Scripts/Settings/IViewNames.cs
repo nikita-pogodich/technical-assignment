@@ -6,5 +6,7 @@ namespace Settings
         string GameHUDWindow { get; }
         string LoseWindow { get; }
         string ConfirmationWindow { get; }
+        string CardView { get; }
+        string CardsMatchingWindow { get; }
     }
 }

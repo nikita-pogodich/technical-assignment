@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Core.ModelProvider;
 using Core.MVPImplementation;
 using Cysharp.Threading.Tasks;
@@ -20,9 +21,12 @@ namespace Features.CardsMatching
         private readonly List<int> _randomCardIndices = new();
         private readonly Stack<int> _availableCardIndices = new();
         private readonly List<CardModel> _flippedCards = new();
+        private readonly List<CardModel> _matchedCards = new();
         private readonly Random _random = new();
 
         private int _cardsMatched = 0;
+        private CompositeDisposable _cardsSelectionDisposable = new();
+        private CancellationTokenSource _cancellationTokenSource;
 
         public IReadOnlyDictionary<int, CardModel> CurrentCardModelByPositions => _currentCardModelByPositions;
         public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
@@ -37,12 +41,23 @@ namespace Features.CardsMatching
             _modelProvider = modelProvider;
         }
 
-        public void Init()
+        protected override UniTask OnInit()
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+
             for (int i = 0; i < _localSettings.GameSettings.CardResourceKeys.Count; i++)
             {
                 _randomCardTypeIndices.Add(i);
             }
+
+            return UniTask.CompletedTask;
+        }
+
+        protected override void OnDeinit()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
 
         public void StartNewGame()
@@ -55,82 +70,41 @@ namespace Features.CardsMatching
         {
             CurrentStageIndex++;
 
-            StageSetting stageSetting;
             if (CurrentStageIndex >= _localSettings.GameSettings.StageSettings.Count)
             {
-                stageSetting = _localSettings.GameSettings.StageSettings[^1];
-            }
-            else
-            {
-                stageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
+                CurrentStageIndex = _localSettings.GameSettings.StageSettings.Count - 1;
             }
 
-            StartStageAsync(stageSetting).Forget();
+            StageSetting stageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
+
+            StartStage(stageSetting);
         }
 
         public void EndGame()
         {
+            _cardsSelectionDisposable?.Dispose();
         }
 
-        public void TryFlipCard(int position)
+        public async UniTask CompleteCardsCreationAsync()
         {
-            if (_currentGameState.Value != GameState.Matching)
-            {
-                return;
-            }
+            _currentGameState.Value = GameState.Remembering;
+            var gameSettingsStageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
 
-            if (_currentCardModelByPositions.TryGetValue(position, out CardModel cardModel) == false)
-            {
-                //TODO: Add Log
-                return;
-            }
+            await UniTask.WaitForSeconds(
+                gameSettingsStageSetting.TimeToRememberCardsSeconds,
+                cancellationToken: _cancellationTokenSource.Token);
 
-            cardModel.IsFlipped.Value = true;
-
-            if (_flippedCards.Count > 0)
-            {
-                CardModel previousFlippedCardModel = _flippedCards[^1];
-                if (previousFlippedCardModel.Index == cardModel.Index)
-                {
-                    _flippedCards.Add(cardModel);
-                }
-                else
-                {
-                    foreach (CardModel flippedCardModel in _flippedCards)
-                    {
-                        flippedCardModel.IsFlipped.Value = false;
-                    }
-
-                    _flippedCards.Clear();
-                }
-
-                StageSetting stageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
-                if (_flippedCards.Count == stageSetting.CardsToMatch)
-                {
-                    foreach (CardModel flippedCardModel in _flippedCards)
-                    {
-                        flippedCardModel.IsMatched.Value = true;
-                    }
-
-                    _cardsMatched += stageSetting.CardsToMatch;
-                    _flippedCards.Clear();
-
-                    if (_cardsMatched == stageSetting.CardsAmount)
-                    {
-                        _currentGameState.Value = GameState.StageCompleted;
-                    }
-                }
-            }
-            else
-            {
-                _flippedCards.Add(cardModel);
-            }
+            _currentGameState.Value = GameState.Matching;
         }
 
-        private async UniTaskVoid StartStageAsync(StageSetting stageSetting)
+        private void StartStage(StageSetting stageSetting)
         {
             _cardsMatched = 0;
 
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _cardsSelectionDisposable?.Dispose();
+            _cardsSelectionDisposable = new CompositeDisposable();
             _currentCardModelByPositions.Clear();
             _availableCardTypeIndices.Clear();
             _availableCardIndices.Clear();
@@ -173,13 +147,82 @@ namespace Features.CardsMatching
                 {
                     int position = _availableCardIndices.Pop();
                     var cardModel = new CardModel(position, index, resourceKey, _modelProvider.GetUniqueId());
+                    cardModel.Selected.Subscribe(OnCardSelected).AddTo(_cardsSelectionDisposable);
                     _currentCardModelByPositions.Add(position, cardModel);
                 }
             }
 
-            _currentGameState.Value = GameState.Remembering;
-            await UniTask.WaitForSeconds(stageSetting.TimeToRememberCardsSeconds);
-            _currentGameState.Value = GameState.Matching;
+            _currentGameState.Value = GameState.CardsCreation;
+        }
+
+        private void OnCardSelected(int position)
+        {
+            if (_currentGameState.Value != GameState.Matching)
+            {
+                return;
+            }
+
+            if (_currentCardModelByPositions.TryGetValue(position, out CardModel cardModel) == false)
+            {
+                //TODO: Add Log
+                return;
+            }
+
+            if (cardModel.IsFlipped.Value || cardModel.IsMatched.Value)
+            {
+                return;
+            }
+
+            cardModel.IsFlipped.Value = true;
+            _flippedCards.Add(cardModel);
+
+            if (_flippedCards.Count > 1)
+            {
+                CardModel previousFlippedCardModel = _matchedCards[^1];
+                if (previousFlippedCardModel.Index == cardModel.Index)
+                {
+                    _matchedCards.Add(cardModel);
+                }
+                else
+                {
+                    CardModel[] cardsToReset = _flippedCards.ToArray();
+                    _flippedCards.Clear();
+                    ResetCardsAsync(cardsToReset).Forget();
+                    return;
+                }
+
+                StageSetting stageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
+                if (_matchedCards.Count == stageSetting.CardsToMatch)
+                {
+                    foreach (CardModel flippedCardModel in _flippedCards)
+                    {
+                        flippedCardModel.IsMatched.Value = true;
+                    }
+
+                    _cardsMatched += stageSetting.CardsToMatch;
+                    _matchedCards.Clear();
+                    _flippedCards.Clear();
+
+                    if (_cardsMatched == stageSetting.CardsAmount)
+                    {
+                        _currentGameState.Value = GameState.StageCompleted;
+                    }
+                }
+            }
+            else
+            {
+                _matchedCards.Add(cardModel);
+            }
+        }
+
+        private async UniTaskVoid ResetCardsAsync(CardModel[] cardsToReset)
+        {
+            await UniTask.WaitForSeconds(1, cancellationToken: _cancellationTokenSource.Token);
+
+            foreach (CardModel cardModel in cardsToReset)
+            {
+                cardModel.IsFlipped.Value = false;
+            }
         }
 
         private void ShuffleList(List<int> list)

@@ -17,5 +17,11 @@ namespace Settings
 
         [field: SerializeField]
         public string ConfirmationWindow { get; private set; } = "ConfirmationWindow";
+
+        [field: SerializeField]
+        public string CardView { get; private set; } = "CardView";
+
+        [field: SerializeField]
+        public string CardsMatchingWindow { get; private set; } = "CardsMatchingWindow";
     }
 }

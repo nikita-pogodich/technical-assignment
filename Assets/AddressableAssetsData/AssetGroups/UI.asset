@@ -25,6 +25,150 @@ MonoBehaviour:
     m_Address: MainMenuWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: ddfdedaf2de2588458cd32a54f0bf6f5
+    m_Address: Card_Icon_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bec2b195d710ac14f812e75df75c9eff
+    m_Address: Card_Icon_30
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5404b526effe5204ab9a2530ff527be8
+    m_Address: Card_Icon_13
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 40652e14242ffb142be3553f5d9e82c5
+    m_Address: Card_Icon_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 910c3e2c306086a4983a799e403d3b0e
+    m_Address: Card_Icon_35
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4802a66bd6892d84e88d4dd34e4ec437
+    m_Address: Card_Icon_11
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: fd86cfe7bec36594b94804f001076246
+    m_Address: Card_Icon_27
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6af87e85676d9ce45ba69e4b110922ab
+    m_Address: Card_Icon_20
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6fe116ec4681dba4181aa7d68966107a
+    m_Address: Card_Icon_22
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e51d5214429ee224f8725af1f1fcf3aa
+    m_Address: Card_Icon_24
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f47d657f5dc62db4e957a8e650df63a0
+    m_Address: Card_Icon_32
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 12a6bb616320c074e88118ce80976318
+    m_Address: Card_Icon_9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5101f2e35debb3e43930c4b852c1d489
+    m_Address: Card_Icon_31
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d2dee7cd8aee6f44e80d2a05bc6fa619
+    m_Address: Card_Icon_18
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a5d6f979e7c74ad458b4c24416499a13
+    m_Address: Card_Icon_19
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c075e88f412539d41a3df72b5d4d0304
+    m_Address: Card_Icon_26
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 08d22123b23320f488b52decb0e75d98
+    m_Address: Card_Icon_34
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 949641970e323e943891d066baaf5289
+    m_Address: Card_Icon_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8d7a6ae8fcc03ca4a84d23c77cae4635
+    m_Address: Card_Icon_17
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dbab42d83d7941e47ba9a5ec6a6d108f
+    m_Address: Card_Icon_12
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bab559503fb40924d98192fef6659d77
+    m_Address: Card_Icon_15
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b3004c1f94d4c36469aa2fde8091d698
+    m_Address: Card_Icon_21
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: aca708c7fe79b8b4d8e63befa23e936b
+    m_Address: Card_Icon_14
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 10cb599f7e58c664b83af23395324f0b
+    m_Address: Card_Icon_10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8aa790200d830614ea4379d41452d6a5
+    m_Address: Card_Icon_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dc020f54e09b9f545813e5f25d6233f1
+    m_Address: Card_Icon_8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9d610f9eb10a50c489ea45ea19f77a76
+    m_Address: Card_Icon_29
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bc0a01af42eb1e8458523d672b488598
+    m_Address: Card_Icon_23
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3833acc326c22f84cb19ba0ed066ec78
+    m_Address: Card_Icon_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d43c14e1f85a4104f8bdc9ce5238d593
+    m_Address: Card_Icon_25
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e6233039e2a865a4585357d5ebe1fa48
+    m_Address: Card_Icon_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7ccbba3ca04ea3d43817ad09d33a666c
+    m_Address: Card_Icon_36
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d8b10a7230dd5fd458c5c0e90dbf5d4f
+    m_Address: Card_Icon_33
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 64947e5360c06404b9b9e747daaf3b74
+    m_Address: Card_Icon_16
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b1430940feeecf34b84196395636121d
+    m_Address: Card_Icon_28
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bada9d330c74cc04db052790fef44fa9
+    m_Address: Card_Icon_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b80bf93a8c68cbe40943a2f12e80492d, type: 2}
   m_SchemaSet:

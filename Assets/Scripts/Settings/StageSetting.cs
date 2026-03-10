@@ -13,10 +13,7 @@ namespace Settings
         public int CardsAmount { get; private set; } = 4;
 
         [field: SerializeField]
-        public int AttemptsAmount { get; private set; } = 100;
-
-        [field: SerializeField]
-        public int TimeToRememberCardsSeconds { get; private set; } = 3;
+        public float TimeToRememberCardsSeconds { get; private set; } = 1.5f;
 
         [field: SerializeField]
         public float GridWidth { get; private set; }

@@ -29,6 +29,8 @@ namespace Views.MainMenuWindow
         {
             base.SetShown(isShown);
             SetCanvasEnabled(isShown);
+            
+            //TODO: Add show/hide animation
         }
 
         public void SetContinueButtonShown(bool isShown)

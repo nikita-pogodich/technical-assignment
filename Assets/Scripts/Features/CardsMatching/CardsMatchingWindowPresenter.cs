@@ -5,6 +5,7 @@ using Core.ViewProvider;
 using Core.WindowManager;
 using Cysharp.Threading.Tasks;
 using Features.MainMenu;
+using Features.StagesCompleted;
 using R3;
 using Settings;
 using ViewInterfaces;
@@ -35,6 +36,7 @@ namespace Features.CardsMatching
         {
             View.BackToMainMenu.Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
             Model.CurrentGameState.Subscribe(OnCurrentGameStateChanged).AddTo(ref disposableBuilder);
+            Model.CurrentScore.Subscribe(OnCurrentScoreChanged).AddTo(ref disposableBuilder);
         }
 
         private async UniTaskVoid CreateCardsAsync()
@@ -86,7 +88,25 @@ namespace Features.CardsMatching
                     //TODO: Call hide all cards animation
                     Model.StartNextStage();
                     break;
+                case GameState.AllStagesCompleted:
+                    //TODO: Call hide all cards animation
+                    _windowManager.ShowWindowAsync<IStagesCompletedWindowView, StagesCompletedWindowModel>(
+                        _localSettings.ViewNames.StagesCompletedWindow,
+                        beforeShow: OnBeforeStagesCompletedWindowShow).Forget();
+
+                    SetShown(false);
+                    break;
             }
+        }
+
+        private void OnBeforeStagesCompletedWindowShow(StagesCompletedWindowModel model)
+        {
+            model.SetScore(Model.CurrentScore.CurrentValue);
+        }
+
+        private void OnCurrentScoreChanged(int score)
+        {
+            View.Score.Value = score;
         }
 
         private void OnBackToMainMenu(Unit _)

@@ -2,6 +2,7 @@
 using Core.MVPImplementation;
 using R3;
 using Settings;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using ViewInterfaces;
@@ -14,6 +15,12 @@ namespace Views.CardsMatchingWindow
         private Button _backToMainMenuButton;
 
         [SerializeField]
+        private TextMeshProUGUI _scoreValue;
+
+        [SerializeField]
+        private string _scoreFormat = "Score: {0}";
+
+        [SerializeField]
         private RectTransform _content;
 
         [SerializeField]
@@ -24,10 +31,19 @@ namespace Views.CardsMatchingWindow
         private ILocalSettings _localSettings;
 
         public Observable<Unit> BackToMainMenu => _exitGame;
+        public ReactiveProperty<int> Score { get; } = new();
 
         public void InjectDependencies(ILocalSettings localSettings)
         {
             _localSettings = localSettings;
+        }
+
+        public override void SetShown(bool isShown)
+        {
+            base.SetShown(isShown);
+            SetCanvasEnabled(isShown);
+
+            //TODO: Add show/hide animation
         }
 
         public void AddCard(int position, ICardView cardView)
@@ -77,6 +93,7 @@ namespace Views.CardsMatchingWindow
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             _backToMainMenuButton.OnClickAsObservable().Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
+            Score.Subscribe(OnScoreChanged).AddTo(ref disposableBuilder);
         }
 
         protected override void OnDeinit()
@@ -87,6 +104,11 @@ namespace Views.CardsMatchingWindow
         private void OnBackToMainMenu(Unit _)
         {
             _exitGame.Execute(Unit.Default);
+        }
+
+        private void OnScoreChanged(int score)
+        {
+            _scoreValue.text = string.Format(_scoreFormat, score.ToString());
         }
     }
 }

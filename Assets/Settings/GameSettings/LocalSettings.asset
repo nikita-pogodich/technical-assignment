@@ -59,22 +59,5 @@ MonoBehaviour:
     - Card_Icon_34
     - Card_Icon_35
     - Card_Icon_36
-    <StageSettings>k__BackingField:
-    - <CardsToMatch>k__BackingField: 2
-      <CardsAmount>k__BackingField: 4
-      <AttemptsAmount>k__BackingField: 100
-      <TimeToRememberCardsSeconds>k__BackingField: 2
-      <GridWidth>k__BackingField: 740
-      <CardSize>k__BackingField: {x: 254, y: 354}
-    - <CardsToMatch>k__BackingField: 2
-      <CardsAmount>k__BackingField: 6
-      <AttemptsAmount>k__BackingField: 100
-      <TimeToRememberCardsSeconds>k__BackingField: 2
-      <GridWidth>k__BackingField: 880
-      <CardSize>k__BackingField: {x: 254, y: 354}
-    - <CardsToMatch>k__BackingField: 2
-      <CardsAmount>k__BackingField: 8
-      <AttemptsAmount>k__BackingField: 100
-      <TimeToRememberCardsSeconds>k__BackingField: 2
-      <GridWidth>k__BackingField: 1080
-      <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <TimeToResetMismatchedCardsSeconds>k__BackingField: 1
+    _stagesSettings: {fileID: 11400000, guid: 77735498cdfff07489d6887ca74fbe14, type: 2}

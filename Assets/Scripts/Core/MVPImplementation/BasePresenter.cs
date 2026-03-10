@@ -48,7 +48,7 @@ namespace Core.MVPImplementation
             _childPresenters.Clear();
         }
 
-        public virtual void SetShown(bool isShown)
+        public void SetShown(bool isShown)
         {
             _isShown = isShown;
             View.SetShown(isShown);

@@ -3,6 +3,7 @@ using Core.ModelProvider;
 using Cysharp.Threading.Tasks;
 using Features.CardsMatching;
 using Features.MainMenu;
+using Features.StagesCompleted;
 using Settings;
 using UnityEngine;
 using ViewInterfaces;
@@ -80,6 +81,15 @@ namespace Core.GameBootstrap
                 _cardsMatchingModel);
 
             _windowManager.RegisterWindowFactory(cardsMatchingWindowFactory);
+
+            var stagesCompletedWindowFactory = new StagesCompletedWindowFactory(
+                _windowViewProvider,
+                _modelProvider,
+                _localSettings,
+                _windowManager,
+                _cardsMatchingModel);
+
+            _windowManager.RegisterWindowFactory(stagesCompletedWindowFactory);
         }
 
         private async UniTask InitResourcesManager()

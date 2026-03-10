@@ -5,6 +5,7 @@
         CardsCreation,
         Remembering,
         Matching,
-        StageCompleted
+        StageCompleted,
+        AllStagesCompleted
     }
 }

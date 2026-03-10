@@ -15,6 +15,7 @@ namespace Features.CardsMatching
         private readonly IModelProvider _modelProvider;
 
         private readonly ReactiveProperty<GameState> _currentGameState = new();
+        private readonly ReactiveProperty<int> _currentScore = new();
         private readonly Dictionary<int, CardModel> _currentCardModelByPositions = new();
         private readonly List<int> _randomCardTypeIndices = new();
         private readonly Stack<int> _availableCardTypeIndices = new();
@@ -30,6 +31,7 @@ namespace Features.CardsMatching
 
         public IReadOnlyDictionary<int, CardModel> CurrentCardModelByPositions => _currentCardModelByPositions;
         public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
+        public ReadOnlyReactiveProperty<int> CurrentScore => _currentScore;
         public int CurrentStageIndex { get; private set; }
 
         public CardsMatchingModel(
@@ -62,18 +64,19 @@ namespace Features.CardsMatching
 
         public void StartNewGame()
         {
+            _currentScore.Value = 0;
             CurrentStageIndex = -1;
             StartNextStage();
         }
 
         public void StartNextStage()
         {
-            CurrentStageIndex++;
-
-            if (CurrentStageIndex >= _localSettings.GameSettings.StageSettings.Count)
+            if (CurrentStageIndex + 1 >= _localSettings.GameSettings.StageSettings.Count)
             {
-                CurrentStageIndex = _localSettings.GameSettings.StageSettings.Count - 1;
+                return;
             }
+
+            CurrentStageIndex++;
 
             StageSetting stageSetting = _localSettings.GameSettings.StageSettings[CurrentStageIndex];
 
@@ -188,7 +191,18 @@ namespace Features.CardsMatching
                     CardModel[] cardsToReset = _flippedCards.ToArray();
                     _matchedCards.Clear();
                     _flippedCards.Clear();
-                    ResetCardsAsync(cardsToReset).Forget();
+                    ResetMismatchedCardsAsync(cardsToReset).Forget();
+
+                    int mismatchScorePenalty = _localSettings.GameSettings.MismatchScorePenalty;
+                    if (_currentScore.Value - mismatchScorePenalty < 0)
+                    {
+                        _currentScore.Value = 0;
+                    }
+                    else
+                    {
+                        _currentScore.Value -= mismatchScorePenalty;
+                    }
+
                     return;
                 }
 
@@ -204,9 +218,18 @@ namespace Features.CardsMatching
                     _matchedCards.Clear();
                     _flippedCards.Clear();
 
+                    _currentScore.Value += _localSettings.GameSettings.MatchScoreBonus;
+
                     if (_cardsMatched == stageSetting.CardsAmount)
                     {
-                        _currentGameState.Value = GameState.StageCompleted;
+                        if (CurrentStageIndex + 1 == _localSettings.GameSettings.StageSettings.Count)
+                        {
+                            _currentGameState.Value = GameState.AllStagesCompleted;
+                        }
+                        else
+                        {
+                            _currentGameState.Value = GameState.StageCompleted;
+                        }
                     }
                 }
             }
@@ -216,9 +239,11 @@ namespace Features.CardsMatching
             }
         }
 
-        private async UniTaskVoid ResetCardsAsync(CardModel[] cardsToReset)
+        private async UniTaskVoid ResetMismatchedCardsAsync(CardModel[] cardsToReset)
         {
-            await UniTask.WaitForSeconds(1, cancellationToken: _cancellationTokenSource.Token);
+            await UniTask.WaitForSeconds(
+                _localSettings.GameSettings.TimeToResetMismatchedCardsSeconds,
+                cancellationToken: _cancellationTokenSource.Token);
 
             foreach (CardModel cardModel in cardsToReset)
             {

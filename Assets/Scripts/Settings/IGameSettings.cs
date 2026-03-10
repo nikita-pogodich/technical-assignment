@@ -6,5 +6,8 @@ namespace Settings
     {
         List<string> CardResourceKeys { get; }
         List<StageSetting> StageSettings { get; }
+        int MatchScoreBonus { get; }
+        int MismatchScorePenalty { get; }
+        float TimeToResetMismatchedCardsSeconds { get; }
     }
 }

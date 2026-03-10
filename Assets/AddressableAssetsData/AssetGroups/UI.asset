@@ -177,6 +177,10 @@ MonoBehaviour:
     m_Address: CardView
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 5781e8e2e58a750468fe0d51badfb28b
+    m_Address: StagesCompletedWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: b80bf93a8c68cbe40943a2f12e80492d, type: 2}
   m_SchemaSet:

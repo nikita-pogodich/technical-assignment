@@ -23,5 +23,8 @@ namespace Settings
 
         [field: SerializeField]
         public string CardsMatchingWindow { get; private set; } = "CardsMatchingWindow";
+
+        [field: SerializeField]
+        public string StagesCompletedWindow { get; private set; } = "StagesCompletedWindow";
     }
 }

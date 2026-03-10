@@ -11,6 +11,17 @@ namespace Settings
         public List<string> CardResourceKeys { get; private set; }
 
         [field: SerializeField]
-        public List<StageSetting> StageSettings { get; private set; }
+        public float TimeToResetMismatchedCardsSeconds { get; private set; } = 1.0f;
+
+        [field: SerializeField]
+        public int MatchScoreBonus { get; private set; } = 100;
+
+        [field: SerializeField]
+        public int MismatchScorePenalty { get; private set; } = 10;
+
+        [SerializeField]
+        private StagesSettings _stagesSettings;
+
+        public List<StageSetting> StageSettings => _stagesSettings.StageSettings;
     }
 }

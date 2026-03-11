@@ -10,7 +10,7 @@ namespace ViewInterfaces
         ReactiveProperty<int> Score { get; }
         void InjectDependencies(ILocalSettings localSettings);
         void AddCard(int position, ICardView cardView);
-        void SetAllCardsFilled(bool isFlipped);
+        void SetAllCardsFilled(bool isFlipped, bool isInstantly);
         void ClearCards();
         void SetStageIndex(int stageIndex);
     }

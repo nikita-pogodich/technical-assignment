@@ -47,13 +47,18 @@ namespace Features.CardsMatching
             {
                 var cardView = await _viewProvider.GetAsync<ICardView>(_localSettings.ViewNames.CardView);
                 cardView.InjectDependencies(_resourcesManager);
+                await cardView.LoadIconAsync(cardModel.IconResourceKey);
 
                 var cardPresenter = new CardPresenter();
                 cardPresenter.Init(cardView, cardModel);
-                cardPresenter.SetShown(true);
                 _cardPresenters.Add(cardPresenter);
 
                 View.AddCard(cardModel.Position, cardView);
+            }
+
+            foreach (CardPresenter cardPresenter in _cardPresenters)
+            {
+                cardPresenter.SetShown(true);
             }
 
             await Model.CompleteCardsCreationAsync();
@@ -63,6 +68,7 @@ namespace Features.CardsMatching
         {
             foreach (CardPresenter cardPresenter in _cardPresenters)
             {
+                cardPresenter.SetShown(false);
                 _viewProvider.Release(_localSettings.ViewNames.CardView, cardPresenter.View);
             }
 
@@ -79,17 +85,15 @@ namespace Features.CardsMatching
                     View.SetStageIndex(Model.CurrentStageIndex);
                     break;
                 case GameState.Remembering:
-                    View.SetAllCardsFilled(true);
+                    View.SetAllCardsFilled(isFlipped: true, isInstantly: true);
                     break;
                 case GameState.Matching:
-                    View.SetAllCardsFilled(false);
+                    View.SetAllCardsFilled(isFlipped: false, isInstantly: false);
                     break;
                 case GameState.StageCompleted:
-                    //TODO: Call hide all cards animation
                     Model.StartNextStage();
                     break;
                 case GameState.AllStagesCompleted:
-                    //TODO: Call hide all cards animation
                     _windowManager.ShowWindowAsync<IStagesCompletedWindowView, StagesCompletedWindowModel>(
                         _localSettings.ViewNames.StagesCompletedWindow,
                         beforeShow: OnBeforeStagesCompletedWindowShow).Forget();

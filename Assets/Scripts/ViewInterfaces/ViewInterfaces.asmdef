@@ -2,6 +2,7 @@
     "name": "ViewInterfaces",
     "rootNamespace": "",
     "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:69e55f2bea839c44285ad561b95502ac",
         "GUID:414a336b33557eb4cac7238449cd7fd3",
         "GUID:44f1178cecc31104984489f15da2983b"

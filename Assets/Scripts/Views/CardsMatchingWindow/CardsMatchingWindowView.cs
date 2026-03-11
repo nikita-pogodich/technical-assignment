@@ -63,11 +63,11 @@ namespace Views.CardsMatchingWindow
             _cardViews.Add(cardView);
         }
 
-        public void SetAllCardsFilled(bool isFlipped)
+        public void SetAllCardsFilled(bool isFlipped, bool isInstantly)
         {
             foreach (ICardView cardView in _cardViews)
             {
-                cardView.SetFlipped(isFlipped);
+                cardView.SetFlipped(isFlipped, isInstantly);
             }
         }
 

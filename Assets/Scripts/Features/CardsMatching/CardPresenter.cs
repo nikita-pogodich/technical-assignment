@@ -8,10 +8,9 @@ namespace Features.CardsMatching
     {
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
-            View.IconResourceKey.Value = Model.IconResourceKey;
             View.Selected.Subscribe(OnSelected).AddTo(ref disposableBuilder);
 
-            Model.IsFlipped.Subscribe(View.SetFlipped).AddTo(ref disposableBuilder);
+            Model.IsFlipped.Subscribe(OnIsFlippedChanged).AddTo(ref disposableBuilder);
             Model.IsMatched.Subscribe(View.SetMatched).AddTo(ref disposableBuilder);
         }
 
@@ -23,6 +22,11 @@ namespace Features.CardsMatching
             }
 
             Model.Select();
+        }
+
+        private void OnIsFlippedChanged(bool isFlipped)
+        {
+            View.SetFlipped(isFlipped);
         }
     }
 }

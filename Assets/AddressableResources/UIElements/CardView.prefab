@@ -253,9 +253,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _icon: {fileID: 5557878127916969517}
   _wrapperCanvasGroup: {fileID: 6589278369691241369}
+  _wrapperRectTransform: {fileID: 2877708332032591611}
   _backCanvasGroup: {fileID: 5557878126452033389}
   _frontCanvasGroup: {fileID: 5557878126708827726}
   _selectButton: {fileID: 4494778463429420432}
+  _halfFlipDuration: 0.1166667
+  _flipEase: 7
+  _matchedScale: 0.8
+  _matchedRotation: {x: 0, y: 180, z: -12}
+  _matchedDuration: 0.2
+  _delayBeforeHideMatched: 1
+  _matchedEase: 1
 --- !u!1 &5557878127916969519
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,14 +289,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5557878127916969519}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5557878126708827721}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.19500001, y: 0.15812644}
   m_AnchorMax: {x: 0.80119354, y: 0.8391265}
   m_AnchoredPosition: {x: 0.5, y: 0.5}
@@ -379,7 +387,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7259971806708313112}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0

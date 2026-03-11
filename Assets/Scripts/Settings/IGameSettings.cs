@@ -9,6 +9,7 @@ namespace Settings
         int MatchScoreBonus { get; }
         int MismatchScorePenalty { get; }
         float TimeToResetMismatchedCardsSeconds { get; }
+        float DelayBeforeStageCompletedSeconds { get; }
         string SavesFolderName { get; }
         string AutoSaveSlotName { get; }
     }

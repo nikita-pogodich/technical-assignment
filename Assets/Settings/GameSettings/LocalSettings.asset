@@ -19,6 +19,7 @@ MonoBehaviour:
     <ConfirmationWindow>k__BackingField: ConfirmationWindow
     <CardView>k__BackingField: CardView
     <CardsMatchingWindow>k__BackingField: CardsMatchingWindow
+    <StagesCompletedWindow>k__BackingField: StagesCompletedWindow
   _resourceNames:
     <WindowRoots>k__BackingField: WindowRoots
   _gameSettings:
@@ -60,4 +61,9 @@ MonoBehaviour:
     - Card_Icon_35
     - Card_Icon_36
     <TimeToResetMismatchedCardsSeconds>k__BackingField: 1
+    <DelayBeforeStageCompletedSeconds>k__BackingField: 1.8
+    <MatchScoreBonus>k__BackingField: 100
+    <MismatchScorePenalty>k__BackingField: 10
+    <SavesFolderName>k__BackingField: Saves
+    <AutoSaveSlotName>k__BackingField: Slot_1
     _stagesSettings: {fileID: 11400000, guid: 77735498cdfff07489d6887ca74fbe14, type: 2}

@@ -244,11 +244,11 @@ namespace Features.CardsMatching
                     {
                         if (CurrentStageIndex + 1 == _localSettings.GameSettings.StageSettings.Count)
                         {
-                            _currentGameState.Value = GameState.AllStagesCompleted;
+                            SetAllStageCompletedAsync().Forget();
                         }
                         else
                         {
-                            _currentGameState.Value = GameState.StageCompleted;
+                            SetStageCompletedAsync().Forget();
                         }
                     }
                 }
@@ -257,6 +257,24 @@ namespace Features.CardsMatching
             {
                 _matchedCards.Add(cardModel);
             }
+        }
+
+        private async UniTaskVoid SetStageCompletedAsync()
+        {
+            await UniTask.WaitForSeconds(
+                _localSettings.GameSettings.DelayBeforeStageCompletedSeconds,
+                cancellationToken: _cancellationTokenSource.Token);
+
+            _currentGameState.Value = GameState.StageCompleted;
+        }
+
+        private async UniTaskVoid SetAllStageCompletedAsync()
+        {
+            await UniTask.WaitForSeconds(
+                _localSettings.GameSettings.DelayBeforeStageCompletedSeconds,
+                cancellationToken: _cancellationTokenSource.Token);
+
+            _currentGameState.Value = GameState.AllStagesCompleted;
         }
 
         private async UniTaskVoid ResetMismatchedCardsAsync(CardModel[] cardsToReset)

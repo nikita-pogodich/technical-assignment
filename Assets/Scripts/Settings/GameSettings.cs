@@ -14,6 +14,9 @@ namespace Settings
         public float TimeToResetMismatchedCardsSeconds { get; private set; } = 1.0f;
 
         [field: SerializeField]
+        public float DelayBeforeStageCompletedSeconds { get; private set; } = 1.0f;
+
+        [field: SerializeField]
         public int MatchScoreBonus { get; private set; } = 100;
 
         [field: SerializeField]

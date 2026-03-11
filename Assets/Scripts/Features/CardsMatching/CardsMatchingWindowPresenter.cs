@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Core.MVPImplementation;
 using Core.ResourcesManager;
 using Core.ViewProvider;
@@ -20,6 +21,8 @@ namespace Features.CardsMatching
         private readonly IResourcesManager _resourcesManager;
         private readonly List<CardPresenter> _cardPresenters = new();
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         public CardsMatchingWindowPresenter(
             ILocalSettings localSettings,
             IViewProvider viewProvider,
@@ -39,9 +42,18 @@ namespace Features.CardsMatching
             Model.CurrentScore.Subscribe(OnCurrentScoreChanged).AddTo(ref disposableBuilder);
         }
 
+        protected override void OnDeinit()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+
         private async UniTaskVoid CreateCardsAsync()
         {
             ClearCards();
+
+            _cancellationTokenSource = new CancellationTokenSource();
 
             foreach (CardModel cardModel in Model.CurrentCardModelByPositions.Values)
             {
@@ -53,8 +65,12 @@ namespace Features.CardsMatching
                 cardPresenter.Init(cardView, cardModel);
                 _cardPresenters.Add(cardPresenter);
 
-                View.AddCard(cardModel.Position, cardView);
+                View.AddCard(cardView);
             }
+
+            View.UpdateCardPositions();
+
+            await View.DealCardsAsync(_cancellationTokenSource.Token);
 
             foreach (CardPresenter cardPresenter in _cardPresenters)
             {
@@ -66,6 +82,10 @@ namespace Features.CardsMatching
 
         private void ClearCards()
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+
             foreach (CardPresenter cardPresenter in _cardPresenters)
             {
                 cardPresenter.SetShown(false);

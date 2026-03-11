@@ -1,9 +1,8 @@
-﻿using Core.MVPImplementation;
+﻿using System.Threading;
+using Core.MVPImplementation;
 using Core.ResourcesManager;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,13 +51,24 @@ namespace Views.CardsMatchingWindow
         [SerializeField]
         private Ease _matchedEase = Ease.Linear;
 
+        [SerializeField]
+        private Ease _deadlingPositionEase = Ease.Linear;
+
+        [SerializeField]
+        private float _delayBetweenDealing;
+
+        [SerializeField]
+        private float _dealingDuration;
+
         private readonly ReactiveCommand _selected = new();
         private IResourcesManager _resourcesManager;
 
+        public int Position { get; set; }
         public Observable<Unit> Selected => _selected;
 
         private Sequence _flipSequence;
         private Sequence _matchedSequence;
+        private Sequence _dealingSequence;
         private bool _isShown;
 
         public override void SetShown(bool isShown)
@@ -92,11 +102,11 @@ namespace Views.CardsMatchingWindow
 
             if (isFlipped)
             {
-                TweenerCore<Quaternion, Vector3, QuaternionOptions> firstHalfRotationTween = _wrapperRectTransform
+                var firstHalfRotationTween = _wrapperRectTransform
                     .DOLocalRotate(new Vector3(0.0f, 90.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
-                TweenerCore<Quaternion, Vector3, QuaternionOptions> secondHalfRotationTween = _wrapperRectTransform
+                var secondHalfRotationTween = _wrapperRectTransform
                     .DOLocalRotate(new Vector3(0.0f, 180.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
@@ -107,11 +117,11 @@ namespace Views.CardsMatchingWindow
             }
             else
             {
-                TweenerCore<Quaternion, Vector3, QuaternionOptions> firstHalfRotationTween = _wrapperRectTransform
+                var firstHalfRotationTween = _wrapperRectTransform
                     .DOLocalRotate(new Vector3(0.0f, 90.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
-                TweenerCore<Quaternion, Vector3, QuaternionOptions> secondHalfRotationTween = _wrapperRectTransform
+                var secondHalfRotationTween = _wrapperRectTransform
                     .DOLocalRotate(new Vector3(0.0f, 0.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
@@ -135,15 +145,15 @@ namespace Views.CardsMatchingWindow
 
             if (isMatched)
             {
-                TweenerCore<Quaternion, Vector3, QuaternionOptions> rotationTween = _wrapperRectTransform
+                var rotationTween = _wrapperRectTransform
                     .DOLocalRotate(_matchedRotation, _matchedDuration)
                     .SetEase(_matchedEase);
 
-                TweenerCore<Vector3, Vector3, VectorOptions> scaleTween = _wrapperRectTransform
+                var scaleTween = _wrapperRectTransform
                     .DOScale(_matchedScale, _matchedDuration)
                     .SetEase(_matchedEase);
 
-                TweenerCore<float, float, FloatOptions> fadeTween = _wrapperCanvasGroup
+                var fadeTween = _wrapperCanvasGroup
                     .DOFade(0.0f, _matchedDuration)
                     .SetEase(_matchedEase);
 
@@ -164,15 +174,64 @@ namespace Views.CardsMatchingWindow
             }
         }
 
+        public void UpdatePosition()
+        {
+            transform.SetSiblingIndex(Position);
+        }
+
         public async UniTask LoadIconAsync(string iconResourceKey)
         {
             var iconSprite = await _resourcesManager.LoadAssetAsync<Sprite>(iconResourceKey);
             _icon.sprite = iconSprite;
         }
 
+        public async UniTask DealCardAsync(Vector3 dealingOrigin, CancellationToken cancellationToken)
+        {
+            _dealingSequence?.Kill();
+            _dealingSequence = DOTween.Sequence();
+
+            _wrapperRectTransform.position = dealingOrigin;
+            _wrapperRectTransform.localEulerAngles = Vector3.zero;
+            _wrapperCanvasGroup.alpha = 1.0f;
+
+            var positionTween = _wrapperRectTransform
+                .DOAnchorPos(Vector3.zero, _dealingDuration)
+                .SetEase(_deadlingPositionEase);
+
+            var firstHalfRotationTween = _wrapperRectTransform
+                .DOLocalRotate(new Vector3(0.0f, 90.0f, 0.0f), _halfFlipDuration)
+                .SetEase(_flipEase);
+
+            var secondHalfRotationTween = _wrapperRectTransform
+                .DOLocalRotate(new Vector3(0.0f, 180.0f, 0.0f), _halfFlipDuration)
+                .SetEase(_flipEase);
+
+            float startTime = _delayBetweenDealing * Position;
+
+            await _dealingSequence
+                .Insert(startTime, positionTween)
+                .Insert(startTime, firstHalfRotationTween)
+                .InsertCallback(startTime + _halfFlipDuration, ShowFront)
+                .Insert(startTime + _halfFlipDuration, secondHalfRotationTween)
+                .WithCancellation(cancellationToken);
+
+            void ShowFront()
+            {
+                _frontCanvasGroup.alpha = 1.0f;
+                _backCanvasGroup.alpha = 0.0f;
+            }
+        }
+
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             _selectButton.OnClickAsObservable().Subscribe(OnSelect).AddTo(ref disposableBuilder);
+        }
+
+        protected override void OnDeinit()
+        {
+            _flipSequence?.Kill();
+            _matchedSequence?.Kill();
+            _dealingSequence?.Kill();
         }
 
         private void OnSelect(Unit _)

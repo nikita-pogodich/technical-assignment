@@ -264,6 +264,9 @@ MonoBehaviour:
   _matchedDuration: 0.2
   _delayBeforeHideMatched: 1
   _matchedEase: 1
+  _deadlingPositionEase: 12
+  _delayBetweenDealing: 0.06666667
+  _dealingDuration: 0.41666666
 --- !u!1 &5557878127916969519
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ namespace Features.CardsMatching
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             View.Selected.Subscribe(OnSelected).AddTo(ref disposableBuilder);
+            View.Position = Model.Position;
 
             Model.IsFlipped.Subscribe(OnIsFlippedChanged).AddTo(ref disposableBuilder);
             Model.IsMatched.Subscribe(View.SetMatched).AddTo(ref disposableBuilder);

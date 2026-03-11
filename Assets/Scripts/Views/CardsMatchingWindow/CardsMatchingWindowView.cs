@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Core.MVPImplementation;
+using Cysharp.Threading.Tasks;
 using R3;
 using Settings;
 using TMPro;
@@ -24,6 +26,9 @@ namespace Views.CardsMatchingWindow
         private RectTransform _content;
 
         [SerializeField]
+        private RectTransform _dealingOrigin;
+
+        [SerializeField]
         private GridLayoutGroup _gridLayout;
 
         private readonly ReactiveCommand _exitGame = new();
@@ -46,7 +51,7 @@ namespace Views.CardsMatchingWindow
             //TODO: Add show/hide animation
         }
 
-        public void AddCard(int position, ICardView cardView)
+        public void AddCard(ICardView cardView)
         {
             if (cardView is not BaseView itemView)
             {
@@ -58,9 +63,17 @@ namespace Views.CardsMatchingWindow
             itemTransform.localScale = Vector3.one;
             itemTransform.localEulerAngles = Vector3.zero;
 
-            itemTransform.SetSiblingIndex(position);
+            itemTransform.SetSiblingIndex(cardView.Position);
 
             _cardViews.Add(cardView);
+        }
+
+        public void UpdateCardPositions()
+        {
+            foreach (ICardView cardView in _cardViews)
+            {
+                cardView.UpdatePosition();
+            }
         }
 
         public void SetAllCardsFilled(bool isFlipped, bool isInstantly)
@@ -88,6 +101,22 @@ namespace Views.CardsMatchingWindow
             _gridLayout.cellSize = stageSetting.CardSize;
 
             _content.sizeDelta = new Vector2(stageSetting.GridWidth, _content.sizeDelta.y);
+        }
+
+        private readonly List<UniTask> _cardsDealingTasks = new();
+
+        public async UniTask DealCardsAsync(CancellationToken cancellationToken)
+        {
+            _cardsDealingTasks.Clear();
+
+            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+
+            foreach (ICardView cardView in _cardViews)
+            {
+                _cardsDealingTasks.Add(cardView.DealCardAsync(_dealingOrigin.position, cancellationToken));
+            }
+
+            await UniTask.WhenAll(_cardsDealingTasks);
         }
 
         protected override void OnInit(ref DisposableBuilder disposableBuilder)

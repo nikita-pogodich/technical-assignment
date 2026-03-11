@@ -1,6 +1,6 @@
 ﻿using Core.AudioManager;
-using Core.ModelProvider;
 using Core.MVP;
+using Core.OrientationDetector;
 using Core.ResourcesManager;
 using Core.ViewProvider;
 using Core.WindowManager;
@@ -19,6 +19,7 @@ namespace Features.CardsMatching
         private readonly IWindowManager _windowManager;
         private readonly IResourcesManager _resourcesManager;
         private readonly IAudioManager _audioManager;
+        private readonly IOrientationDetector _orientationDetector;
         private readonly CardsMatchingModel _cardsMatchingModel;
 
         public bool IsAllowMultipleInstances => false;
@@ -31,7 +32,8 @@ namespace Features.CardsMatching
             IWindowManager windowManager,
             IResourcesManager resourcesManager,
             CardsMatchingModel cardsMatchingModel,
-            IAudioManager audioManager)
+            IAudioManager audioManager,
+            IOrientationDetector orientationDetector)
         {
             _windowViewProvider = windowViewProvider;
             _localSettings = localSettings;
@@ -40,12 +42,18 @@ namespace Features.CardsMatching
             _resourcesManager = resourcesManager;
             _cardsMatchingModel = cardsMatchingModel;
             _audioManager = audioManager;
+            _orientationDetector = orientationDetector;
         }
 
         public async UniTask<IWindowPresenter> CreateAsync()
         {
-            var view = await _windowViewProvider.GetAsync<ICardsMatchingWindow>(ViewName, WindowType.Main);
-            view.InjectDependencies(_localSettings);
+            var view = await _windowViewProvider.GetAsync<ICardsMatchingWindow>(
+                ViewName,
+                WindowType.Main,
+                isInitView: false);
+
+            view.InjectDependencies(_localSettings, _orientationDetector);
+            view.Init(ViewName);
 
             var presenter = new CardsMatchingWindowPresenter(
                 _localSettings,

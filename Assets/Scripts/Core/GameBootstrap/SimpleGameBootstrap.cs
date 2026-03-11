@@ -20,6 +20,9 @@ namespace Core.GameBootstrap
         [SerializeField]
         private UnityAudioManager _unityAudioManager;
 
+        [SerializeField]
+        private OrientationDetector.OrientationDetector _orientationDetector;
+
         private readonly WindowManager.WindowManager _windowManager = new();
         private readonly IModelProvider _modelProvider = new SimpleModelProvider();
         private readonly ResourcesManager.ResourcesManager _resourcesManager = new();
@@ -43,6 +46,7 @@ namespace Core.GameBootstrap
             _destroyCancellationTokenSource = null;
             _windowManager.Dispose();
             _cardsMatchingModel?.Deinit();
+            _windowViewProvider?.Deinit();
         }
 
         private async UniTaskVoid InitAsync()
@@ -120,7 +124,8 @@ namespace Core.GameBootstrap
                 _windowManager,
                 _resourcesManager,
                 _cardsMatchingModel,
-                _audioManager);
+                _audioManager,
+                _orientationDetector);
 
             _windowManager.RegisterWindowFactory(cardsMatchingWindowFactory);
 
@@ -164,7 +169,8 @@ namespace Core.GameBootstrap
             _windowViewProvider = new WindowViewProvider.WindowViewProvider(
                 _localSettings,
                 _resourcesManager,
-                _viewProvider);
+                _viewProvider,
+                _orientationDetector);
 
             await _windowViewProvider.InitializeAsync(_destroyCancellationTokenSource.Token);
         }

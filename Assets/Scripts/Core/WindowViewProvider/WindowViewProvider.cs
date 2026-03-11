@@ -2,6 +2,7 @@
 using System.Threading;
 using Core.MVP;
 using Core.MVPImplementation;
+using Core.OrientationDetector;
 using Core.ResourcesManager;
 using Core.ViewProvider;
 using Cysharp.Threading.Tasks;
@@ -15,17 +16,20 @@ namespace Core.WindowViewProvider
         private readonly ILocalSettings _localSettings;
         private readonly IResourcesManager _resourcesManager;
         private readonly IViewProvider _viewProvider;
+        private readonly IOrientationDetector _orientationDetector;
 
         private WindowViewProviderRoots _windowViewProviderRoots;
 
         public WindowViewProvider(
             ILocalSettings localSettings,
             IResourcesManager resourcesManager,
-            IViewProvider viewProvider)
+            IViewProvider viewProvider,
+            IOrientationDetector orientationDetector)
         {
             _localSettings = localSettings;
             _resourcesManager = resourcesManager;
             _viewProvider = viewProvider;
+            _orientationDetector = orientationDetector;
         }
 
         public async UniTask InitializeAsync(CancellationToken cancellation)
@@ -37,6 +41,13 @@ namespace Core.WindowViewProvider
             UnityEngine.Object.DontDestroyOnLoad(windowRootsGameObject);
 
             _windowViewProviderRoots = windowRootsGameObject.GetComponent<WindowViewProviderRoots>();
+            _windowViewProviderRoots.InjectDependencies(_localSettings, _orientationDetector);
+            _windowViewProviderRoots.Init();
+        }
+
+        public void Deinit()
+        {
+            _windowViewProviderRoots.Deinit();
         }
 
         public TView Get<TView>(string resourceKey, WindowType windowType) where TView : IWindowView
@@ -58,9 +69,12 @@ namespace Core.WindowViewProvider
             return view;
         }
 
-        public async UniTask<TView> GetAsync<TView>(string resourceKey, WindowType windowType) where TView : IWindowView
+        public async UniTask<TView> GetAsync<TView>(
+            string resourceKey,
+            WindowType windowType,
+            bool isInitView = true) where TView : IWindowView
         {
-            TView view = await _viewProvider.GetAsync<TView>(resourceKey);
+            TView view = await _viewProvider.GetAsync<TView>(resourceKey, isInitView);
 
             if (view == null)
             {

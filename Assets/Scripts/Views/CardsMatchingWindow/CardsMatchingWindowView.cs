@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using Core.MVPImplementation;
+using Core.OrientationDetector;
 using Cysharp.Threading.Tasks;
 using R3;
 using Settings;
@@ -32,6 +33,9 @@ namespace Views.CardsMatchingWindow
         private CanvasGroup _comboMultiplierCanvasGroup;
 
         [SerializeField]
+        private RectTransform _cardsWrapper;
+
+        [SerializeField]
         private RectTransform _content;
 
         [SerializeField]
@@ -43,15 +47,18 @@ namespace Views.CardsMatchingWindow
         private readonly ReactiveCommand _exitGame = new();
         private readonly List<ICardView> _cardViews = new();
         private ILocalSettings _localSettings;
+        private IOrientationDetector _orientationDetector;
 
         private readonly List<UniTask> _cardsDealingTasks = new();
         private readonly List<UniTask> _cardsHidingTasks = new();
+        private int _stageIndex;
 
         public Observable<Unit> BackToMainMenu => _exitGame;
 
-        public void InjectDependencies(ILocalSettings localSettings)
+        public void InjectDependencies(ILocalSettings localSettings, IOrientationDetector orientationDetector)
         {
             _localSettings = localSettings;
+            _orientationDetector = orientationDetector;
         }
 
         public override void SetShown(bool isShown)
@@ -96,16 +103,8 @@ namespace Views.CardsMatchingWindow
 
         public void SetStageIndex(int stageIndex)
         {
-            if (_localSettings == null ||
-                stageIndex >= _localSettings.GameSettings.StageSettings.Count)
-            {
-                return;
-            }
-
-            StageSetting stageSetting = _localSettings.GameSettings.StageSettings[stageIndex];
-            _gridLayout.cellSize = stageSetting.CardSize;
-
-            _content.sizeDelta = new Vector2(stageSetting.GridWidth, _content.sizeDelta.y);
+            _stageIndex = stageIndex;
+            UpdateCardsGrid(stageIndex);
         }
 
         public async UniTask DealCardsAsync(CancellationToken cancellationToken)
@@ -154,6 +153,7 @@ namespace Views.CardsMatchingWindow
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             _backToMainMenuButton.OnClickAsObservable().Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
+            _orientationDetector.Orientation.Subscribe(OnOrientationChanged).AddTo(ref disposableBuilder);
         }
 
         protected override void OnDeinit()
@@ -164,6 +164,48 @@ namespace Views.CardsMatchingWindow
         private void OnBackToMainMenu(Unit _)
         {
             _exitGame.Execute(Unit.Default);
+        }
+
+        private void OnOrientationChanged(Orientation orientation)
+        {
+            UpdateCardsGrid(_stageIndex);
+        }
+
+        private void UpdateCardsGrid(int stageIndex)
+        {
+            if (_localSettings == null || stageIndex >= _localSettings.GameSettings.StageSettings.Count)
+            {
+                return;
+            }
+
+            Orientation orientation = _orientationDetector.Orientation.CurrentValue;
+            StageSetting stageSetting = _localSettings.GameSettings.StageSettings[stageIndex];
+
+            Vector2 cardSize;
+            float gridWidth;
+            float gridHeight;
+            float gridWrapperOffset;
+
+            switch (orientation)
+            {
+                case Orientation.Landscape:
+                default:
+                    cardSize = stageSetting.Landscape.CardSize;
+                    gridWidth = stageSetting.Landscape.GridWidth;
+                    gridHeight = _localSettings.GameSettings.LandscapeGridHeight;
+                    gridWrapperOffset = _localSettings.GameSettings.LandscapeGridWrapperOffset;
+                    break;
+                case Orientation.Portrait:
+                    cardSize = stageSetting.Portrait.CardSize;
+                    gridWidth = stageSetting.Portrait.GridWidth;
+                    gridHeight = _localSettings.GameSettings.PortraitGridHeight;
+                    gridWrapperOffset = _localSettings.GameSettings.PortraitGridWrapperOffset;
+                    break;
+            }
+
+            _cardsWrapper.offsetMin = new Vector2(gridWrapperOffset, _cardsWrapper.offsetMin.y);
+            _gridLayout.cellSize = cardSize;
+            _content.sizeDelta = new Vector2(gridWidth, gridHeight);
         }
     }
 }

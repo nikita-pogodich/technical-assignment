@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Core.MVP;
+using Core.OrientationDetector;
 using Cysharp.Threading.Tasks;
 using R3;
 using Settings;
@@ -11,7 +12,7 @@ namespace ViewInterfaces
         Observable<Unit> BackToMainMenu { get; }
         void SetScore(int score);
         void SetComboMultiplier(int comboMultiplier);
-        void InjectDependencies(ILocalSettings localSettings);
+        void InjectDependencies(ILocalSettings localSettings, IOrientationDetector orientationDetector);
         void AddCard(ICardView cardView);
         void UpdateCardPositions();
         void ClearCards();

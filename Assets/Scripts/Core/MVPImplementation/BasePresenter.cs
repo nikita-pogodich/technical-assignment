@@ -33,7 +33,7 @@ namespace Core.MVPImplementation
         {
             OnDeinit();
 
-            _reactiveDisposable.Dispose();
+            _reactiveDisposable?.Dispose();
 
             foreach (IPresenter childPresenter in _childPresenters)
             {

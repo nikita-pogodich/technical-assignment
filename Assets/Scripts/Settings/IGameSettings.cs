@@ -17,5 +17,11 @@ namespace Settings
         float DefaultSfxVolume { get; }
         int MaxComboMultiplier { get; }
         int CardViewsPreloadPoolSize { get; }
+        float LandscapeGridWrapperOffset { get; }
+        float PortraitGridWrapperOffset { get; }
+        float LandscapeGridHeight { get; }
+        float PortraitGridHeight { get; }
+        float LandscapeCanvasScalerMatch { get; }
+        float PortraitCanvasScalerMatch { get; }
     }
 }

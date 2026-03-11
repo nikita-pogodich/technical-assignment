@@ -245,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb93a6913dd46844fbedc42bf5c415bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasScaler: {fileID: 384199177139244677}
   <WindowTypeRoots>k__BackingField:
   - Root: {fileID: 6452108913514597965}
     WindowType: 2

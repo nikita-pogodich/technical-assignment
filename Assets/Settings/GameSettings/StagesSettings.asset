@@ -16,60 +16,108 @@ MonoBehaviour:
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 4
     <TimeToRememberCardsSeconds>k__BackingField: 1
-    <GridWidth>k__BackingField: 740
-    <CardSize>k__BackingField: {x: 254, y: 354}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 740
+      <CardSize>k__BackingField: {x: 254, y: 354}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 850
+      <CardSize>k__BackingField: {x: 365.76, y: 509.76}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 6
     <TimeToRememberCardsSeconds>k__BackingField: 2
-    <GridWidth>k__BackingField: 880
-    <CardSize>k__BackingField: {x: 254, y: 354}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 254, y: 354}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 850
+      <CardSize>k__BackingField: {x: 365.76, y: 509.76}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 8
     <TimeToRememberCardsSeconds>k__BackingField: 2
-    <GridWidth>k__BackingField: 1080
-    <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1080
+      <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 700
+      <CardSize>k__BackingField: {x: 266.0073, y: 370.73465}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 10
     <TimeToRememberCardsSeconds>k__BackingField: 3
-    <GridWidth>k__BackingField: 1220
-    <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1220
+      <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 600
+      <CardSize>k__BackingField: {x: 212.80585, y: 296.58768}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 12
     <TimeToRememberCardsSeconds>k__BackingField: 3
-    <GridWidth>k__BackingField: 1500
-    <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1500
+      <CardSize>k__BackingField: {x: 211.6667, y: 295}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 254, y: 354}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 16
     <TimeToRememberCardsSeconds>k__BackingField: 3
-    <GridWidth>k__BackingField: 900
-    <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 900
+      <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 190.834, y: 265.96545}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 18
     <TimeToRememberCardsSeconds>k__BackingField: 3
-    <GridWidth>k__BackingField: 1300
-    <CardSize>k__BackingField: {x: 194.02779, y: 270.41663}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1300
+      <CardSize>k__BackingField: {x: 194.02779, y: 270.41663}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 720
+      <CardSize>k__BackingField: {x: 173.48546, y: 241.78682}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 20
     <TimeToRememberCardsSeconds>k__BackingField: 4
-    <GridWidth>k__BackingField: 1000
-    <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1000
+      <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 190.83405, y: 265.96548}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 24
     <TimeToRememberCardsSeconds>k__BackingField: 4
-    <GridWidth>k__BackingField: 1200
-    <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1200
+      <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 880
+      <CardSize>k__BackingField: {x: 190.83403, y: 265.9655}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 28
     <TimeToRememberCardsSeconds>k__BackingField: 4
-    <GridWidth>k__BackingField: 1500
-    <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1500
+      <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 800
+      <CardSize>k__BackingField: {x: 161.63637, y: 225.27278}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 30
     <TimeToRememberCardsSeconds>k__BackingField: 4
-    <GridWidth>k__BackingField: 960
-    <CardSize>k__BackingField: {x: 133.628, y: 186.23737}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 960
+      <CardSize>k__BackingField: {x: 133.628, y: 186.23737}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 920
+      <CardSize>k__BackingField: {x: 161.63637, y: 225.27278}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 32
     <TimeToRememberCardsSeconds>k__BackingField: 4
-    <GridWidth>k__BackingField: 1500
-    <CardSize>k__BackingField: {x: 161.68988, y: 225.34721}
+    <Landscape>k__BackingField:
+      <GridWidth>k__BackingField: 1500
+      <CardSize>k__BackingField: {x: 161.68988, y: 225.34721}
+    <Portrait>k__BackingField:
+      <GridWidth>k__BackingField: 700
+      <CardSize>k__BackingField: {x: 140.26299, y: 195.4847}

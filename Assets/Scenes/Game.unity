@@ -515,6 +515,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2136035736}
   - component: {fileID: 2136035735}
+  - component: {fileID: 2136035737}
   m_Layer: 0
   m_Name: GameBootstrap
   m_TagString: Untagged
@@ -536,6 +537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _localSettings: {fileID: 11400000, guid: f7c5025ea6a79254ea98143d30d8a16d, type: 2}
   _unityAudioManager: {fileID: 832652010}
+  _orientationDetector: {fileID: 2136035737}
 --- !u!4 &2136035736
 Transform:
   m_ObjectHideFlags: 0
@@ -551,3 +553,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2136035737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2136035734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81737e60bf104387bbd6b9635835b7df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _minAspectRatio: 0.5625

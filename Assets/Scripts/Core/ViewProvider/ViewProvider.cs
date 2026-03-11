@@ -25,12 +25,15 @@ namespace Core.ViewProvider
             return view;
         }
 
-        public async UniTask<TView> GetAsync<TView>(string resourceKey) where TView : IView
+        public async UniTask<TView> GetAsync<TView>(string resourceKey, bool isInitView = true) where TView : IView
         {
             GameObject resource = await _resourcesManager.InstantiateAsync(resourceKey);
             TView view = resource.GetComponent<TView>();
 
-            view.Init(resourceKey);
+            if (isInitView)
+            {
+                view.Init(resourceKey);
+            }
 
             return view;
         }

@@ -16,9 +16,9 @@ namespace Settings
         public float TimeToRememberCardsSeconds { get; private set; } = 1.5f;
 
         [field: SerializeField]
-        public float GridWidth { get; private set; }
+        public OrientationStageSettings Landscape { get; private set; }
 
         [field: SerializeField]
-        public Vector2 CardSize { get; private set; }
+        public OrientationStageSettings Portrait { get; private set; }
     }
 }

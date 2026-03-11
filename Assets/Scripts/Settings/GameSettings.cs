@@ -43,6 +43,24 @@ namespace Settings
         [field: SerializeField]
         public int CardViewsPreloadPoolSize { get; private set; } = 32;
 
+        [field: SerializeField]
+        public float LandscapeGridWrapperOffset { get; private set; } = 400.0f;
+
+        [field: SerializeField]
+        public float PortraitGridWrapperOffset { get; private set; } = 0.0f;
+
+        [field: SerializeField]
+        public float LandscapeGridHeight { get; private set; } = 1080.0f;
+
+        [field: SerializeField]
+        public float PortraitGridHeight { get; private set; } = 1580.0f;
+
+        [field: SerializeField]
+        public float LandscapeCanvasScalerMatch { get; private set; } = 1.0f;
+
+        [field: SerializeField]
+        public float PortraitCanvasScalerMatch { get; private set; } = 0.5f;
+
         [SerializeField]
         private StagesSettings _stagesSettings;
 

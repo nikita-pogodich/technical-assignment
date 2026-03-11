@@ -79,4 +79,11 @@ MonoBehaviour:
     <DefaultMusicVolume>k__BackingField: 0.1
     <DefaultSfxVolume>k__BackingField: 1
     <MaxComboMultiplier>k__BackingField: 5
+    <CardViewsPreloadPoolSize>k__BackingField: 32
+    <LandscapeGridWrapperOffset>k__BackingField: 400
+    <PortraitGridWrapperOffset>k__BackingField: 0
+    <LandscapeGridHeight>k__BackingField: 1080
+    <PortraitGridHeight>k__BackingField: 1700
+    <LandscapeCanvasScalerMatch>k__BackingField: 1
+    <PortraitCanvasScalerMatch>k__BackingField: 0.5
     _stagesSettings: {fileID: 11400000, guid: 69d7a13276d8b2047a7c41e4b0792785, type: 2}

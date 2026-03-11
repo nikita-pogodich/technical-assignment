@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b999c62e203b47edbb44e5a7176a17fb, type: 3}
+  m_Name: AudioDatabase
+  m_EditorClassIdentifier: 
+  <AudioEntries>k__BackingField:
+  - Key: Card_Flip
+    Clip: {fileID: 8300000, guid: 75aafe5b5c5c37648b4836d317fe9c8b, type: 3}
+  - Key: Main_Theme
+    Clip: {fileID: 8300000, guid: ed5ef588baf8c354f996b6da50699a1e, type: 3}
+  - Key: Match
+    Clip: {fileID: 8300000, guid: edca80020339ba24699ed30308b51cdb, type: 3}
+  - Key: Mismatch
+    Clip: {fileID: 8300000, guid: 01ea6d8d00ddac149ab0417fae67caa9, type: 3}
+  - Key: Victory
+    Clip: {fileID: 8300000, guid: 13342ab4e250baf4c971e954941ce058, type: 3}

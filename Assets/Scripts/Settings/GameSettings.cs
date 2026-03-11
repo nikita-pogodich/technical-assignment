@@ -28,6 +28,15 @@ namespace Settings
         [field: SerializeField]
         public string AutoSaveSlotName { get; private set; } = "Slot_1";
 
+        [field: SerializeField]
+        public float DefaultMasterVolume { get; private set; } = 0.3f;
+
+        [field: SerializeField]
+        public float DefaultMusicVolume { get; private set; } = 0.15f;
+
+        [field: SerializeField]
+        public float DefaultSfxVolume { get; private set; } = 1.0f;
+
         [SerializeField]
         private StagesSettings _stagesSettings;
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using Core.AudioManager;
 using Core.MVPImplementation;
 using Core.ResourcesManager;
 using Core.ViewProvider;
@@ -19,6 +20,7 @@ namespace Features.CardsMatching
         private readonly IViewProvider _viewProvider;
         private readonly IWindowManager _windowManager;
         private readonly IResourcesManager _resourcesManager;
+        private readonly IAudioManager _audioManager;
         private readonly List<CardPresenter> _cardPresenters = new();
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -27,12 +29,14 @@ namespace Features.CardsMatching
             ILocalSettings localSettings,
             IViewProvider viewProvider,
             IWindowManager windowManager,
-            IResourcesManager resourcesManager)
+            IResourcesManager resourcesManager,
+            IAudioManager audioManager)
         {
             _localSettings = localSettings;
             _viewProvider = viewProvider;
             _windowManager = windowManager;
             _resourcesManager = resourcesManager;
+            _audioManager = audioManager;
         }
 
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
@@ -40,6 +44,8 @@ namespace Features.CardsMatching
             View.BackToMainMenu.Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
             Model.CurrentGameState.Subscribe(OnCurrentGameStateChanged).AddTo(ref disposableBuilder);
             Model.CurrentScore.Subscribe(OnCurrentScoreChanged).AddTo(ref disposableBuilder);
+            Model.CardsMatched.Subscribe(OnCardsMatched).AddTo(ref disposableBuilder);
+            Model.CardsMismatched.Subscribe(OnCardsMismatched).AddTo(ref disposableBuilder);
         }
 
         protected override void OnDeinit()
@@ -58,10 +64,10 @@ namespace Features.CardsMatching
             foreach (CardModel cardModel in Model.CurrentCardModelByPositions.Values)
             {
                 var cardView = await _viewProvider.GetAsync<ICardView>(_localSettings.ViewNames.CardView);
-                cardView.InjectDependencies(_resourcesManager);
+                cardView.InjectDependencies(_localSettings, _resourcesManager, _audioManager);
                 await cardView.LoadIconAsync(cardModel.IconResourceKey);
 
-                var cardPresenter = new CardPresenter();
+                var cardPresenter = new CardPresenter(_localSettings, _audioManager);
                 cardPresenter.Init(cardView, cardModel);
                 _cardPresenters.Add(cardPresenter);
 
@@ -108,12 +114,15 @@ namespace Features.CardsMatching
                     View.SetAllCardsFilled(isFlipped: true, isInstantly: true);
                     break;
                 case GameState.Matching:
+                    _audioManager.PlaySound(_localSettings.ResourceNames.CardFlipSound);
                     View.SetAllCardsFilled(isFlipped: false, isInstantly: false);
                     break;
                 case GameState.StageCompleted:
                     Model.StartNextStage();
                     break;
                 case GameState.AllStagesCompleted:
+                    _audioManager.PlaySound(_localSettings.ResourceNames.VictorySound);
+
                     _windowManager.ShowWindowAsync<IStagesCompletedWindowView, StagesCompletedWindowModel>(
                         _localSettings.ViewNames.StagesCompletedWindow,
                         beforeShow: OnBeforeStagesCompletedWindowShow).Forget();
@@ -146,6 +155,26 @@ namespace Features.CardsMatching
             SetShown(false);
             _windowManager.ShowWindowAsync<IMainMenuWindowView, MainMenuWindowModel>(
                 _localSettings.ViewNames.MainMenuWindow).Forget();
+        }
+
+        private void OnCardsMatched(Unit _)
+        {
+            if (IsShown == false)
+            {
+                return;
+            }
+
+            _audioManager.PlaySound(_localSettings.ResourceNames.CardMatchedSound);
+        }
+
+        private void OnCardsMismatched(Unit _)
+        {
+            if (IsShown == false)
+            {
+                return;
+            }
+
+            _audioManager.PlaySound(_localSettings.ResourceNames.CardMismatchedSound);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Features.CardsMatching
 
         private readonly ReactiveProperty<GameState> _currentGameState = new();
         private readonly ReactiveProperty<int> _currentScore = new();
+        private readonly ReactiveCommand _cardsMatched = new();
+        private readonly ReactiveCommand _cardsMismatched = new();
         private readonly Dictionary<int, CardModel> _currentCardModelByPositions = new();
         private readonly List<int> _randomCardTypeIndices = new();
         private readonly Stack<int> _availableCardTypeIndices = new();
@@ -27,13 +29,15 @@ namespace Features.CardsMatching
         private readonly List<CardModel> _matchedCards = new();
         private readonly Random _random = new();
 
-        private int _cardsMatched = 0;
+        private int _cardsMatchedAmount = 0;
         private CompositeDisposable _cardsSelectionDisposable = new();
         private CancellationTokenSource _cancellationTokenSource;
 
         public IReadOnlyDictionary<int, CardModel> CurrentCardModelByPositions => _currentCardModelByPositions;
         public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
         public ReadOnlyReactiveProperty<int> CurrentScore => _currentScore;
+        public Observable<Unit> CardsMatched => _cardsMatched;
+        public Observable<Unit> CardsMismatched => _cardsMismatched;
         public int CurrentStageIndex { get; private set; }
 
         public CardsMatchingModel(
@@ -122,7 +126,7 @@ namespace Features.CardsMatching
 
         private void StartStage(StageSetting stageSetting)
         {
-            _cardsMatched = 0;
+            _cardsMatchedAmount = 0;
 
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -213,6 +217,8 @@ namespace Features.CardsMatching
                     _flippedCards.Clear();
                     ResetMismatchedCardsAsync(cardsToReset).Forget();
 
+                    _cardsMismatched.Execute(Unit.Default);
+
                     int mismatchScorePenalty = _localSettings.GameSettings.MismatchScorePenalty;
                     if (_currentScore.Value - mismatchScorePenalty < 0)
                     {
@@ -234,13 +240,15 @@ namespace Features.CardsMatching
                         flippedCardModel.IsMatched.Value = true;
                     }
 
-                    _cardsMatched += stageSetting.CardsToMatch;
+                    _cardsMatched.Execute(Unit.Default);
+
+                    _cardsMatchedAmount += stageSetting.CardsToMatch;
                     _matchedCards.Clear();
                     _flippedCards.Clear();
 
                     _currentScore.Value += _localSettings.GameSettings.MatchScoreBonus;
 
-                    if (_cardsMatched == stageSetting.CardsAmount)
+                    if (_cardsMatchedAmount == stageSetting.CardsAmount)
                     {
                         if (CurrentStageIndex + 1 == _localSettings.GameSettings.StageSettings.Count)
                         {

@@ -12,5 +12,8 @@ namespace Settings
         float DelayBeforeStageCompletedSeconds { get; }
         string SavesFolderName { get; }
         string AutoSaveSlotName { get; }
+        float DefaultMasterVolume { get; }
+        float DefaultMusicVolume { get; }
+        float DefaultSfxVolume { get; }
     }
 }

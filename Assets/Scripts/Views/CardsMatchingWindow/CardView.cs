@@ -1,9 +1,11 @@
 ﻿using System.Threading;
+using Core.AudioManager;
 using Core.MVPImplementation;
 using Core.ResourcesManager;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using R3;
+using Settings;
 using UnityEngine;
 using UnityEngine.UI;
 using ViewInterfaces;
@@ -61,7 +63,9 @@ namespace Views.CardsMatchingWindow
         private float _dealingDuration;
 
         private readonly ReactiveCommand _selected = new();
+        private ILocalSettings _localSettings;
         private IResourcesManager _resourcesManager;
+        private IAudioManager _audioManager;
 
         public int Position { get; set; }
         public Observable<Unit> Selected => _selected;
@@ -77,8 +81,13 @@ namespace Views.CardsMatchingWindow
             _wrapperCanvasGroup.alpha = isShown ? 1.0f : 0.0f;
         }
 
-        public void InjectDependencies(IResourcesManager resourcesManager)
+        public void InjectDependencies(
+            ILocalSettings localSettings,
+            IResourcesManager resourcesManager,
+            IAudioManager audioManager)
         {
+            _localSettings = localSettings;
+            _audioManager = audioManager;
             _resourcesManager = resourcesManager;
         }
 
@@ -209,6 +218,7 @@ namespace Views.CardsMatchingWindow
             float startTime = _delayBetweenDealing * Position;
 
             await _dealingSequence
+                .InsertCallback(startTime, PlayDealSound)
                 .Insert(startTime, positionTween)
                 .Insert(startTime, firstHalfRotationTween)
                 .InsertCallback(startTime + _halfFlipDuration, ShowFront)
@@ -220,6 +230,11 @@ namespace Views.CardsMatchingWindow
                 _frontCanvasGroup.alpha = 1.0f;
                 _backCanvasGroup.alpha = 0.0f;
             }
+        }
+
+        private void PlayDealSound()
+        {
+            _audioManager.PlaySound(_localSettings.ResourceNames.CardDealSound);
         }
 
         protected override void OnInit(ref DisposableBuilder disposableBuilder)

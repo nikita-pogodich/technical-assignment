@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Core.AudioManager;
 using Core.ModelProvider;
 using Core.SaveSystem;
 using Cysharp.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace Core.GameBootstrap
         [SerializeField]
         private LocalSettings _localSettings;
 
+        [SerializeField]
+        private UnityAudioManager _unityAudioManager;
+
         private readonly WindowManager.WindowManager _windowManager = new();
         private readonly IModelProvider _modelProvider = new SimpleModelProvider();
         private readonly ResourcesManager.ResourcesManager _resourcesManager = new();
@@ -25,6 +29,7 @@ namespace Core.GameBootstrap
         private WindowViewProvider.WindowViewProvider _windowViewProvider;
         private CardsMatchingModel _cardsMatchingModel;
         private ISaveSystem _saveSystem;
+        private IAudioManager _audioManager;
 
         private void Start()
         {
@@ -42,14 +47,11 @@ namespace Core.GameBootstrap
 
         private async UniTaskVoid InitAsync()
         {
-            string savePath = System.IO.Path.Combine(
-                Application.persistentDataPath,
-                _localSettings.GameSettings.SavesFolderName);
-
-            _saveSystem = new JsonSlotSaveSystem(savePath, new NewtonsoftJsonSerializer());
+            InitSaveSystem();
 
             await InitResourcesManager();
             InitViewProvider();
+            InitAudioManager();
             await InitWindowViewProvider();
 
             if (_destroyCancellationTokenSource == null || _destroyCancellationTokenSource.IsCancellationRequested)
@@ -60,6 +62,21 @@ namespace Core.GameBootstrap
             RegisterWindowFactories();
 
             ShowStartWindowAsync().Forget();
+        }
+
+        private void InitSaveSystem()
+        {
+            string savePath = System.IO.Path.Combine(
+                Application.persistentDataPath,
+                _localSettings.GameSettings.SavesFolderName);
+
+            _saveSystem = new JsonSlotSaveSystem(savePath, new NewtonsoftJsonSerializer());
+        }
+
+        private void InitAudioManager()
+        {
+            _unityAudioManager.Init();
+            _audioManager = _unityAudioManager;
         }
 
         private void RegisterWindowFactories()
@@ -88,7 +105,8 @@ namespace Core.GameBootstrap
                 _viewProvider,
                 _windowManager,
                 _resourcesManager,
-                _cardsMatchingModel);
+                _cardsMatchingModel,
+                _audioManager);
 
             _windowManager.RegisterWindowFactory(cardsMatchingWindowFactory);
 
@@ -141,6 +159,12 @@ namespace Core.GameBootstrap
         {
             await _windowManager.ShowWindowAsync<IMainMenuWindowView, MainMenuWindowModel>(
                 _localSettings.ViewNames.MainMenuWindow);
+
+            _audioManager.SetMasterVolume(_localSettings.GameSettings.DefaultMasterVolume);
+            _audioManager.SetMusicVolume(_localSettings.GameSettings.DefaultMusicVolume);
+            _audioManager.SetSfxVolume(_localSettings.GameSettings.DefaultSfxVolume);
+
+            _audioManager.PlayMusic(_localSettings.ResourceNames.MainThemeSong);
         }
     }
 }

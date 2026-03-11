@@ -1,4 +1,5 @@
-﻿using Core.ModelProvider;
+﻿using Core.AudioManager;
+using Core.ModelProvider;
 using Core.MVP;
 using Core.ResourcesManager;
 using Core.ViewProvider;
@@ -17,6 +18,7 @@ namespace Features.CardsMatching
         private readonly IViewProvider _viewProvider;
         private readonly IWindowManager _windowManager;
         private readonly IResourcesManager _resourcesManager;
+        private readonly IAudioManager _audioManager;
         private readonly CardsMatchingModel _cardsMatchingModel;
 
         public bool IsAllowMultipleInstances => false;
@@ -28,7 +30,8 @@ namespace Features.CardsMatching
             IViewProvider viewProvider,
             IWindowManager windowManager,
             IResourcesManager resourcesManager,
-            CardsMatchingModel cardsMatchingModel)
+            CardsMatchingModel cardsMatchingModel,
+            IAudioManager audioManager)
         {
             _windowViewProvider = windowViewProvider;
             _localSettings = localSettings;
@@ -36,6 +39,7 @@ namespace Features.CardsMatching
             _windowManager = windowManager;
             _resourcesManager = resourcesManager;
             _cardsMatchingModel = cardsMatchingModel;
+            _audioManager = audioManager;
         }
 
         public async UniTask<IWindowPresenter> CreateAsync()
@@ -47,7 +51,8 @@ namespace Features.CardsMatching
                 _localSettings,
                 _viewProvider,
                 _windowManager,
-                _resourcesManager);
+                _resourcesManager,
+                _audioManager);
 
             presenter.Init(view, _cardsMatchingModel);
 

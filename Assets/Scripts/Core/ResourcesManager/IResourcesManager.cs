@@ -18,6 +18,6 @@ namespace Core.ResourcesManager
 
         void ReleaseGameObject(string resourceKey, GameObject gameObject);
         T LoadAsset<T>(string resourceKey);
-        UniTask<T> LoadAssetAsync<T>(string resourceKey);
+        UniTask<T> LoadAssetAsync<T>(string resourceKey, CancellationToken? cancellationToken = null);
     }
 }

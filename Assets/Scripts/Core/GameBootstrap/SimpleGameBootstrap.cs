@@ -50,6 +50,7 @@ namespace Core.GameBootstrap
             InitSaveSystem();
 
             await InitResourcesManagerAsync();
+            await PreloadResourcesAsync();
             InitViewProvider();
             await InitAudioManagerAsync();
             await InitWindowViewProviderAsync();
@@ -71,6 +72,19 @@ namespace Core.GameBootstrap
                 _localSettings.GameSettings.SavesFolderName);
 
             _saveSystem = new JsonSlotSaveSystem(savePath, new NewtonsoftJsonSerializer());
+        }
+
+        private async UniTask PreloadResourcesAsync()
+        {
+            await _resourcesManager.PrepareGameObjectsAsync(
+                _localSettings.ViewNames.CardView,
+                _localSettings.GameSettings.CardViewsPreloadPoolSize,
+                _destroyCancellationTokenSource.Token);
+
+            if (_localSettings.GameSettings.CardResourceKeys.Count > 0)
+            {
+                await _resourcesManager.LoadAssetAsync<Sprite>(_localSettings.GameSettings.CardResourceKeys[0]);
+            }
         }
 
         private async UniTask InitAudioManagerAsync()

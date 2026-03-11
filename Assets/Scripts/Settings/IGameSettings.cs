@@ -16,5 +16,6 @@ namespace Settings
         float DefaultMusicVolume { get; }
         float DefaultSfxVolume { get; }
         int MaxComboMultiplier { get; }
+        int CardViewsPreloadPoolSize { get; }
     }
 }

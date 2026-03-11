@@ -192,9 +192,9 @@ namespace Views.CardsMatchingWindow
             transform.SetSiblingIndex(Position);
         }
 
-        public async UniTask LoadIconAsync(string iconResourceKey)
+        public async UniTask LoadIconAsync(string iconResourceKey, CancellationToken cancellationToken)
         {
-            var iconSprite = await _resourcesManager.LoadAssetAsync<Sprite>(iconResourceKey);
+            var iconSprite = await _resourcesManager.LoadAssetAsync<Sprite>(iconResourceKey, cancellationToken);
             _icon.sprite = iconSprite;
         }
 

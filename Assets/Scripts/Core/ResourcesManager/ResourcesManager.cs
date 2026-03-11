@@ -16,8 +16,6 @@ namespace Core.ResourcesManager
         private readonly Dictionary<string, Stack<GameObject>> _pool = new();
         private Transform _poolRoot;
 
-        public bool IsInitialized { get; private set; } = false;
-
         public async UniTask InitializeAsync(CancellationToken _)
         {
             var poolGameObject = new GameObject(PoolName);
@@ -31,8 +29,6 @@ namespace Core.ResourcesManager
             Object.DontDestroyOnLoad(poolGameObject);
 
             await UniTask.CompletedTask;
-
-            IsInitialized = true;
         }
 
         public void PrepareGameObjects(string resourceKey, int poolSize)
@@ -142,9 +138,22 @@ namespace Core.ResourcesManager
             return handle.Result;
         }
 
-        public async UniTask<T> LoadAssetAsync<T>(string resourceKey)
+        public async UniTask<T> LoadAssetAsync<T>(string resourceKey, CancellationToken? cancellationToken = null)
         {
-            T result = await Addressables.LoadAssetAsync<T>(resourceKey).ToUniTask();
+            UniTask<T> handle;
+
+            if (cancellationToken != null)
+            {
+                handle = Addressables
+                    .LoadAssetAsync<T>(resourceKey)
+                    .ToUniTask(cancellationToken: cancellationToken.Value);
+            }
+            else
+            {
+                handle = Addressables.LoadAssetAsync<T>(resourceKey).ToUniTask();
+            }
+
+            T result = await handle;
 
             if (result == null)
             {

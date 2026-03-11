@@ -13,7 +13,7 @@ namespace ViewInterfaces
     {
         int Position { get; set; }
         Observable<Unit> Selected { get; }
-        UniTask LoadIconAsync(string iconResourceKey);
+        UniTask LoadIconAsync(string iconResourceKey, CancellationToken cancellationToken);
         UniTask DealCardAsync(Vector3 dealingOrigin, CancellationToken cancellationToken);
 
         void InjectDependencies(

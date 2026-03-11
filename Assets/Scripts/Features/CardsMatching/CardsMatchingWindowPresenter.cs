@@ -69,7 +69,7 @@ namespace Features.CardsMatching
             {
                 var cardView = await _viewProvider.GetAsync<ICardView>(_localSettings.ViewNames.CardView);
                 cardView.InjectDependencies(_localSettings, _resourcesManager, _audioManager);
-                await cardView.LoadIconAsync(cardModel.IconResourceKey);
+                await cardView.LoadIconAsync(cardModel.IconResourceKey, _cancellationTokenSource.Token);
 
                 var cardPresenter = new CardPresenter(_localSettings, _audioManager);
                 cardPresenter.Init(cardView, cardModel);

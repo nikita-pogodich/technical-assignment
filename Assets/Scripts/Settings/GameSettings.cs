@@ -40,6 +40,9 @@ namespace Settings
         [field: SerializeField]
         public int MaxComboMultiplier { get; private set; } = 4;
 
+        [field: SerializeField]
+        public int CardViewsPreloadPoolSize { get; private set; } = 32;
+
         [SerializeField]
         private StagesSettings _stagesSettings;
 

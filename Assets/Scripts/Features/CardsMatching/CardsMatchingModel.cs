@@ -156,6 +156,8 @@ namespace Features.CardsMatching
             _availableCardTypeIndices.Clear();
             _availableCardIndices.Clear();
             _randomCardIndices.Clear();
+            _matchedCards.Clear();
+            _flippedCards.Clear();
 
             for (int i = 0; i < stageSetting.CardsAmount; i++)
             {

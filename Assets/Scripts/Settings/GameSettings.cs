@@ -37,6 +37,9 @@ namespace Settings
         [field: SerializeField]
         public float DefaultSfxVolume { get; private set; } = 1.0f;
 
+        [field: SerializeField]
+        public int MaxComboMultiplier { get; private set; } = 4;
+
         [SerializeField]
         private StagesSettings _stagesSettings;
 

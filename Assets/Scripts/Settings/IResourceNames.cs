@@ -9,5 +9,7 @@ namespace Settings
         string CardMismatchedSound { get; }
         string VictorySound { get; }
         string CardDealSound { get; }
+        string ComboMultiplierIncreased { get; }
+        string ComboMultiplierLost { get; }
     }
 }

@@ -26,5 +26,11 @@ namespace Settings
 
         [field: SerializeField]
         public string CardDealSound { get; private set; } = "Card_Deal";
+
+        [field: SerializeField]
+        public string ComboMultiplierIncreased { get; private set; } = "ComboMultiplier_Increased";
+
+        [field: SerializeField]
+        public string ComboMultiplierLost { get; private set; } = "ComboMultiplier_Lost";
     }
 }

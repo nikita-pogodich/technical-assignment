@@ -42,10 +42,14 @@ namespace Features.CardsMatching
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             View.BackToMainMenu.Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
+
+            Model.CurrentScore.Subscribe(View.SetScore).AddTo(ref disposableBuilder);
+            Model.ComboMultiplier.Subscribe(View.SetComboMultiplier).AddTo(ref disposableBuilder);
             Model.CurrentGameState.Subscribe(OnCurrentGameStateChanged).AddTo(ref disposableBuilder);
-            Model.CurrentScore.Subscribe(OnCurrentScoreChanged).AddTo(ref disposableBuilder);
             Model.CardsMatched.Subscribe(OnCardsMatched).AddTo(ref disposableBuilder);
             Model.CardsMismatched.Subscribe(OnCardsMismatched).AddTo(ref disposableBuilder);
+            Model.ComboMultiplierIncreased.Subscribe(OnComboMultiplierIncreased).AddTo(ref disposableBuilder);
+            Model.ComboMultiplierLost.Subscribe(OnComboMultiplierLost).AddTo(ref disposableBuilder);
         }
 
         protected override void OnDeinit()
@@ -77,6 +81,11 @@ namespace Features.CardsMatching
             View.UpdateCardPositions();
 
             await View.DealCardsAsync(_cancellationTokenSource.Token);
+
+            if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested)
+            {
+                return;
+            }
 
             foreach (CardPresenter cardPresenter in _cardPresenters)
             {
@@ -137,11 +146,6 @@ namespace Features.CardsMatching
             model.SetScore(Model.CurrentScore.CurrentValue);
         }
 
-        private void OnCurrentScoreChanged(int score)
-        {
-            View.Score.Value = score;
-        }
-
         private void OnBackToMainMenu(Unit _)
         {
             if (IsShown == false)
@@ -175,6 +179,26 @@ namespace Features.CardsMatching
             }
 
             _audioManager.PlaySound(_localSettings.ResourceNames.CardMismatchedSound);
+        }
+
+        private void OnComboMultiplierIncreased(Unit _)
+        {
+            if (IsShown == false)
+            {
+                return;
+            }
+
+            _audioManager.PlaySound(_localSettings.ResourceNames.ComboMultiplierIncreased);
+        }
+
+        private void OnComboMultiplierLost(Unit _)
+        {
+            if (IsShown == false)
+            {
+                return;
+            }
+
+            _audioManager.PlaySound(_localSettings.ResourceNames.ComboMultiplierLost);
         }
     }
 }

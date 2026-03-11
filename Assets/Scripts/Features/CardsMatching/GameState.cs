@@ -2,6 +2,7 @@
 {
     public enum GameState
     {
+        GameEnded,
         CardsCreation,
         Remembering,
         Matching,

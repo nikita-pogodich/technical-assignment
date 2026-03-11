@@ -23,6 +23,15 @@ namespace Views.CardsMatchingWindow
         private string _scoreFormat = "Score: {0}";
 
         [SerializeField]
+        private TextMeshProUGUI _comboMultiplier;
+
+        [SerializeField]
+        private string _comboMultiplierFormat = "Combo: x{0}";
+
+        [SerializeField]
+        private CanvasGroup _comboMultiplierCanvasGroup;
+
+        [SerializeField]
         private RectTransform _content;
 
         [SerializeField]
@@ -36,7 +45,6 @@ namespace Views.CardsMatchingWindow
         private ILocalSettings _localSettings;
 
         public Observable<Unit> BackToMainMenu => _exitGame;
-        public ReactiveProperty<int> Score { get; } = new();
 
         public void InjectDependencies(ILocalSettings localSettings)
         {
@@ -119,10 +127,25 @@ namespace Views.CardsMatchingWindow
             await UniTask.WhenAll(_cardsDealingTasks);
         }
 
+        public void SetScore(int score)
+        {
+            _scoreValue.text = string.Format(_scoreFormat, score.ToString());
+        }
+
+        public void SetComboMultiplier(int comboMultiplier)
+        {
+            bool hasComboMultiplier = comboMultiplier > 1;
+            _comboMultiplierCanvasGroup.alpha = hasComboMultiplier ? 1.0f : 0.0f;
+
+            if (hasComboMultiplier)
+            {
+                _comboMultiplier.text = string.Format(_comboMultiplierFormat, comboMultiplier.ToString());
+            }
+        }
+
         protected override void OnInit(ref DisposableBuilder disposableBuilder)
         {
             _backToMainMenuButton.OnClickAsObservable().Subscribe(OnBackToMainMenu).AddTo(ref disposableBuilder);
-            Score.Subscribe(OnScoreChanged).AddTo(ref disposableBuilder);
         }
 
         protected override void OnDeinit()
@@ -133,11 +156,6 @@ namespace Views.CardsMatchingWindow
         private void OnBackToMainMenu(Unit _)
         {
             _exitGame.Execute(Unit.Default);
-        }
-
-        private void OnScoreChanged(int score)
-        {
-            _scoreValue.text = string.Format(_scoreFormat, score.ToString());
         }
     }
 }

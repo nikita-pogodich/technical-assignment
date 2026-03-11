@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Core.AudioManager
 {
@@ -8,16 +10,18 @@ namespace Core.AudioManager
         private AudioDatabase _audioDatabase;
 
         [SerializeField]
-        private AudioSource _sfxSource;
+        private AudioSource _musicSource;
 
         [SerializeField]
-        private AudioSource _musicSource;
+        private int initialSfxPoolSize = 5;
+
+        private readonly List<AudioSource> _sfxPool = new();
 
         private float _masterVolume = 1f;
         private float _musicVolume = 1f;
         private float _sfxVolume = 1f;
 
-        public void Init()
+        public async UniTask Init()
         {
             _audioDatabase.Init();
 
@@ -27,17 +31,23 @@ namespace Core.AudioManager
                 _musicSource.playOnAwake = false;
             }
 
-            if (_sfxSource != null)
+            for (int i = 0; i < initialSfxPoolSize; i++)
             {
-                _sfxSource.loop = false;
+                CreateNewSfxSource();
             }
+
+            await UniTask.CompletedTask;
         }
 
-        public void PlaySound(string key)
+        public void PlaySound(string key, float pitch = 1f)
         {
             if (_audioDatabase.TryGetAudioClip(key, out AudioClip clip))
             {
-                _sfxSource.PlayOneShot(clip);
+                AudioSource source = GetAvailableSfxSource();
+
+                source.pitch = pitch;
+                source.clip = clip;
+                source.Play();
             }
             else
             {
@@ -49,7 +59,10 @@ namespace Core.AudioManager
         {
             if (_audioDatabase.TryGetAudioClip(key, out AudioClip clip))
             {
-                if (_musicSource.clip == clip && _musicSource.isPlaying) return;
+                if (_musicSource.clip == clip && _musicSource.isPlaying)
+                {
+                    return;
+                }
 
                 _musicSource.clip = clip;
                 _musicSource.Play();
@@ -89,7 +102,39 @@ namespace Core.AudioManager
         private void UpdateSourceVolumes()
         {
             _musicSource.volume = _musicVolume * _masterVolume;
-            _sfxSource.volume = _sfxVolume * _masterVolume;
+
+            foreach (var source in _sfxPool)
+            {
+                source.volume = _sfxVolume * _masterVolume;
+            }
+        }
+
+        private AudioSource CreateNewSfxSource()
+        {
+            AudioSource newSource = gameObject.AddComponent<AudioSource>();
+            newSource.spatialBlend = 0f;
+            newSource.loop = false;
+            newSource.playOnAwake = false;
+            newSource.bypassEffects = true;
+            newSource.bypassListenerEffects = true;
+            newSource.bypassReverbZones = true;
+            newSource.volume = _sfxVolume * _masterVolume;
+
+            _sfxPool.Add(newSource);
+            return newSource;
+        }
+
+        private AudioSource GetAvailableSfxSource()
+        {
+            foreach (var source in _sfxPool)
+            {
+                if (source.isPlaying == false)
+                {
+                    return source;
+                }
+            }
+
+            return CreateNewSfxSource();
         }
     }
 }

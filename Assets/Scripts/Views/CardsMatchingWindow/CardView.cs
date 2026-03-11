@@ -202,6 +202,8 @@ namespace Views.CardsMatchingWindow
             _wrapperRectTransform.position = dealingOrigin;
             _wrapperRectTransform.localEulerAngles = Vector3.zero;
             _wrapperCanvasGroup.alpha = 1.0f;
+            _frontCanvasGroup.alpha = 0.0f;
+            _backCanvasGroup.alpha = 1.0f;
 
             var positionTween = _wrapperRectTransform
                 .DOAnchorPos(Vector3.zero, _dealingDuration)

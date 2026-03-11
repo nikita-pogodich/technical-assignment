@@ -15,5 +15,6 @@ namespace Settings
         float DefaultMasterVolume { get; }
         float DefaultMusicVolume { get; }
         float DefaultSfxVolume { get; }
+        int MaxComboMultiplier { get; }
     }
 }

@@ -28,6 +28,8 @@ MonoBehaviour:
     <CardMismatchedSound>k__BackingField: Mismatch
     <VictorySound>k__BackingField: Victory
     <CardDealSound>k__BackingField: Card_Deal
+    <ComboMultiplierIncreased>k__BackingField: ComboMultiplier_Increased
+    <ComboMultiplierLost>k__BackingField: ComboMultiplier_Lost
   _gameSettings:
     <CardResourceKeys>k__BackingField:
     - Card_Icon_1
@@ -73,6 +75,7 @@ MonoBehaviour:
     <SavesFolderName>k__BackingField: Saves
     <AutoSaveSlotName>k__BackingField: Slot_1
     <DefaultMasterVolume>k__BackingField: 0.3
-    <DefaultMusicVolume>k__BackingField: 0.15
+    <DefaultMusicVolume>k__BackingField: 0.1
     <DefaultSfxVolume>k__BackingField: 1
+    <MaxComboMultiplier>k__BackingField: 5
     _stagesSettings: {fileID: 11400000, guid: 69d7a13276d8b2047a7c41e4b0792785, type: 2}

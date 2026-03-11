@@ -18,8 +18,11 @@ namespace Features.CardsMatching
 
         private readonly ReactiveProperty<GameState> _currentGameState = new();
         private readonly ReactiveProperty<int> _currentScore = new();
+        private readonly ReactiveProperty<int> _comboMultiplier = new();
         private readonly ReactiveCommand _cardsMatched = new();
         private readonly ReactiveCommand _cardsMismatched = new();
+        private readonly ReactiveCommand _comboMultiplierIncreased = new();
+        private readonly ReactiveCommand _comboMultiplierLost = new();
         private readonly Dictionary<int, CardModel> _currentCardModelByPositions = new();
         private readonly List<int> _randomCardTypeIndices = new();
         private readonly Stack<int> _availableCardTypeIndices = new();
@@ -36,8 +39,11 @@ namespace Features.CardsMatching
         public IReadOnlyDictionary<int, CardModel> CurrentCardModelByPositions => _currentCardModelByPositions;
         public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
         public ReadOnlyReactiveProperty<int> CurrentScore => _currentScore;
+        public ReadOnlyReactiveProperty<int> ComboMultiplier => _comboMultiplier;
         public Observable<Unit> CardsMatched => _cardsMatched;
         public Observable<Unit> CardsMismatched => _cardsMismatched;
+        public Observable<Unit> ComboMultiplierIncreased => _comboMultiplierIncreased;
+        public Observable<Unit> ComboMultiplierLost => _comboMultiplierLost;
         public int CurrentStageIndex { get; private set; }
 
         public CardsMatchingModel(
@@ -72,6 +78,7 @@ namespace Features.CardsMatching
 
         public void StartNewGame()
         {
+            _comboMultiplier.Value = 0;
             _currentScore.Value = 0;
             CurrentStageIndex = -1;
             StartNextStage();
@@ -81,6 +88,7 @@ namespace Features.CardsMatching
         {
             _saveSystem.TryLoad(_localSettings.GameSettings.AutoSaveSlotName, out CardMatchingSaveData saveData);
             _currentScore.Value = saveData.Score;
+            _comboMultiplier.Value = saveData.ComboMultiplier;
             CurrentStageIndex = saveData.StageIndex;
             StartNextStage();
         }
@@ -104,6 +112,7 @@ namespace Features.CardsMatching
         public void EndGame()
         {
             _cardsSelectionDisposable?.Dispose();
+            _currentGameState.Value = GameState.GameEnded;
         }
 
         public async UniTask CompleteCardsCreationAsync()
@@ -120,7 +129,11 @@ namespace Features.CardsMatching
 
         private void SaveGame()
         {
-            var cardMatchingSaveData = new CardMatchingSaveData(CurrentStageIndex, _currentScore.Value);
+            var cardMatchingSaveData = new CardMatchingSaveData(
+                CurrentStageIndex,
+                _currentScore.Value,
+                _comboMultiplier.Value);
+
             _saveSystem.Save(_localSettings.GameSettings.AutoSaveSlotName, cardMatchingSaveData);
         }
 
@@ -217,7 +230,14 @@ namespace Features.CardsMatching
                     _flippedCards.Clear();
                     ResetMismatchedCardsAsync(cardsToReset).Forget();
 
-                    _cardsMismatched.Execute(Unit.Default);
+                    if (_comboMultiplier.Value > 1)
+                    {
+                        _comboMultiplierLost.Execute(Unit.Default);
+                    }
+
+                    _comboMultiplier.Value = 0;
+
+                    OnCardMismatched();
 
                     int mismatchScorePenalty = _localSettings.GameSettings.MismatchScorePenalty;
                     if (_currentScore.Value - mismatchScorePenalty < 0)
@@ -240,13 +260,25 @@ namespace Features.CardsMatching
                         flippedCardModel.IsMatched.Value = true;
                     }
 
-                    _cardsMatched.Execute(Unit.Default);
+                    _comboMultiplier.Value++;
+
+                    if (_comboMultiplier.Value > _localSettings.GameSettings.MaxComboMultiplier)
+                    {
+                        _comboMultiplier.Value = _localSettings.GameSettings.MaxComboMultiplier;
+                    }
+
+                    if (_comboMultiplier.Value > 1)
+                    {
+                        _comboMultiplierIncreased.Execute(Unit.Default);
+                    }
+
+                    OnCardMatched();
 
                     _cardsMatchedAmount += stageSetting.CardsToMatch;
                     _matchedCards.Clear();
                     _flippedCards.Clear();
 
-                    _currentScore.Value += _localSettings.GameSettings.MatchScoreBonus;
+                    _currentScore.Value += _localSettings.GameSettings.MatchScoreBonus * _comboMultiplier.Value;
 
                     if (_cardsMatchedAmount == stageSetting.CardsAmount)
                     {
@@ -265,6 +297,16 @@ namespace Features.CardsMatching
             {
                 _matchedCards.Add(cardModel);
             }
+        }
+
+        private void OnCardMismatched()
+        {
+            _cardsMismatched.Execute(Unit.Default);
+        }
+
+        private void OnCardMatched()
+        {
+            _cardsMatched.Execute(Unit.Default);
         }
 
         private async UniTaskVoid SetStageCompletedAsync()

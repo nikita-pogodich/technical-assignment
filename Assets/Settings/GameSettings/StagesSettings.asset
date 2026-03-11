@@ -46,8 +46,8 @@ MonoBehaviour:
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 18
     <TimeToRememberCardsSeconds>k__BackingField: 3
-    <GridWidth>k__BackingField: 1250
-    <CardSize>k__BackingField: {x: 176.38892, y: 245.83333}
+    <GridWidth>k__BackingField: 1300
+    <CardSize>k__BackingField: {x: 194.02779, y: 270.41663}
   - <CardsToMatch>k__BackingField: 2
     <CardsAmount>k__BackingField: 20
     <TimeToRememberCardsSeconds>k__BackingField: 4

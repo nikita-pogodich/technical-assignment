@@ -7,11 +7,13 @@ namespace Features.CardsMatching
     {
         public int StageIndex;
         public int Score;
+        public int ComboMultiplier;
 
-        public CardMatchingSaveData(int stageIndex, int score)
+        public CardMatchingSaveData(int stageIndex, int score, int comboMultiplier)
         {
             StageIndex = stageIndex;
             Score = score;
+            ComboMultiplier = comboMultiplier;
         }
     }
 }

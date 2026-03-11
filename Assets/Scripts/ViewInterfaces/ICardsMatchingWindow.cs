@@ -9,7 +9,8 @@ namespace ViewInterfaces
     public interface ICardsMatchingWindow : IWindowView
     {
         Observable<Unit> BackToMainMenu { get; }
-        ReactiveProperty<int> Score { get; }
+        void SetScore(int score);
+        void SetComboMultiplier(int comboMultiplier);
         void InjectDependencies(ILocalSettings localSettings);
         void AddCard(ICardView cardView);
         void UpdateCardPositions();

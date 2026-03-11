@@ -49,10 +49,10 @@ namespace Core.GameBootstrap
         {
             InitSaveSystem();
 
-            await InitResourcesManager();
+            await InitResourcesManagerAsync();
             InitViewProvider();
-            InitAudioManager();
-            await InitWindowViewProvider();
+            await InitAudioManagerAsync();
+            await InitWindowViewProviderAsync();
 
             if (_destroyCancellationTokenSource == null || _destroyCancellationTokenSource.IsCancellationRequested)
             {
@@ -73,9 +73,9 @@ namespace Core.GameBootstrap
             _saveSystem = new JsonSlotSaveSystem(savePath, new NewtonsoftJsonSerializer());
         }
 
-        private void InitAudioManager()
+        private async UniTask InitAudioManagerAsync()
         {
-            _unityAudioManager.Init();
+            await _unityAudioManager.Init();
             _audioManager = _unityAudioManager;
         }
 
@@ -120,7 +120,7 @@ namespace Core.GameBootstrap
             _windowManager.RegisterWindowFactory(stagesCompletedWindowFactory);
         }
 
-        private async UniTask InitResourcesManager()
+        private async UniTask InitResourcesManagerAsync()
         {
             if (_destroyCancellationTokenSource == null || _destroyCancellationTokenSource.IsCancellationRequested)
             {
@@ -140,7 +140,7 @@ namespace Core.GameBootstrap
             _viewProvider = new ViewProvider.ViewProvider(_resourcesManager);
         }
 
-        private async UniTask InitWindowViewProvider()
+        private async UniTask InitWindowViewProviderAsync()
         {
             if (_destroyCancellationTokenSource == null || _destroyCancellationTokenSource.IsCancellationRequested)
             {

@@ -23,3 +23,5 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 01ea6d8d00ddac149ab0417fae67caa9, type: 3}
   - Key: Victory
     Clip: {fileID: 8300000, guid: 13342ab4e250baf4c971e954941ce058, type: 3}
+  - Key: Card_Deal
+    Clip: {fileID: 8300000, guid: 0da97273447c197439146444dab2d919, type: 3}

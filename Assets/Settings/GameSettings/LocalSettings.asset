@@ -22,6 +22,12 @@ MonoBehaviour:
     <StagesCompletedWindow>k__BackingField: StagesCompletedWindow
   _resourceNames:
     <WindowRoots>k__BackingField: WindowRoots
+    <MainThemeSong>k__BackingField: Main_Theme
+    <CardFlipSound>k__BackingField: Card_Flip
+    <CardMatchedSound>k__BackingField: Match
+    <CardMismatchedSound>k__BackingField: Mismatch
+    <VictorySound>k__BackingField: Victory
+    <CardDealSound>k__BackingField: Card_Deal
   _gameSettings:
     <CardResourceKeys>k__BackingField:
     - Card_Icon_1
@@ -66,4 +72,7 @@ MonoBehaviour:
     <MismatchScorePenalty>k__BackingField: 10
     <SavesFolderName>k__BackingField: Saves
     <AutoSaveSlotName>k__BackingField: Slot_1
-    _stagesSettings: {fileID: 11400000, guid: 77735498cdfff07489d6887ca74fbe14, type: 2}
+    <DefaultMasterVolume>k__BackingField: 0.3
+    <DefaultMusicVolume>k__BackingField: 0.15
+    <DefaultSfxVolume>k__BackingField: 1
+    _stagesSettings: {fileID: 11400000, guid: 69d7a13276d8b2047a7c41e4b0792785, type: 2}

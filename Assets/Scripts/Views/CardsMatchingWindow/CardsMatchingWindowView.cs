@@ -81,6 +81,8 @@ namespace Views.CardsMatchingWindow
 
         public void UpdateCardPositions()
         {
+            _cardViews.Sort((x, y) => x.Position.CompareTo(y.Position));
+
             foreach (ICardView cardView in _cardViews)
             {
                 cardView.UpdatePosition();
@@ -126,10 +128,8 @@ namespace Views.CardsMatchingWindow
 
             foreach (ICardView cardView in _cardViews)
             {
-                _cardsHidingTasks.Add(cardView.SetFlippedAsync(
-                    isFlipped: false,
-                    cancellationToken, 
-                    isPlayHideSound: true));
+                UniTask flipTask = cardView.SetFlippedAsync(isFlipped: false, cancellationToken, isPlayHideSound: true);
+                _cardsHidingTasks.Add(flipTask);
             }
 
             await UniTask.WhenAll(_cardsHidingTasks);

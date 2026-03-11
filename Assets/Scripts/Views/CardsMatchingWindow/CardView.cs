@@ -91,21 +91,16 @@ namespace Views.CardsMatchingWindow
             _resourcesManager = resourcesManager;
         }
 
-        public void SetFlipped(bool isFlipped, bool isInstantly = false)
+        public async UniTask SetFlippedAsync(
+            bool isFlipped,
+            CancellationToken cancellationToken,
+            bool isPlayHideSound = false)
         {
             _flipSequence?.Kill();
             _flipSequence = DOTween.Sequence();
 
             if (_isShown == false)
             {
-                return;
-            }
-
-            if (isInstantly)
-            {
-                _frontCanvasGroup.alpha = isFlipped ? 1.0f : 0.0f;
-                _backCanvasGroup.alpha = isFlipped ? 0.0f : 1.0f;
-                _wrapperRectTransform.localEulerAngles = isFlipped ? new Vector3(0.0f, 180.0f, 0.0f) : Vector3.zero;
                 return;
             }
 
@@ -119,13 +114,16 @@ namespace Views.CardsMatchingWindow
                     .DOLocalRotate(new Vector3(0.0f, 180.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
-                _flipSequence
+                await _flipSequence
                     .Insert(0.0f, firstHalfRotationTween)
                     .InsertCallback(_halfFlipDuration, SwitchSides)
-                    .Insert(_halfFlipDuration, secondHalfRotationTween);
+                    .Insert(_halfFlipDuration, secondHalfRotationTween)
+                    .WithCancellation(cancellationToken);
             }
             else
             {
+                float startTime = isPlayHideSound ? _delayBetweenDealing * Position : 0.0f;
+
                 var firstHalfRotationTween = _wrapperRectTransform
                     .DOLocalRotate(new Vector3(0.0f, 90.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
@@ -134,14 +132,20 @@ namespace Views.CardsMatchingWindow
                     .DOLocalRotate(new Vector3(0.0f, 0.0f, 0.0f), _halfFlipDuration)
                     .SetEase(_flipEase);
 
-                _flipSequence
-                    .Insert(0.0f, firstHalfRotationTween)
-                    .InsertCallback(_halfFlipDuration, SwitchSides)
-                    .Insert(_halfFlipDuration, secondHalfRotationTween);
+                await _flipSequence
+                    .Insert(startTime, firstHalfRotationTween)
+                    .InsertCallback(startTime + _halfFlipDuration, SwitchSides)
+                    .Insert(startTime + _halfFlipDuration, secondHalfRotationTween)
+                    .WithCancellation(cancellationToken);
             }
 
             void SwitchSides()
             {
+                if (isFlipped == false && isPlayHideSound)
+                {
+                    _audioManager.PlaySound(_localSettings.ResourceNames.CardHideSound);
+                }
+
                 _frontCanvasGroup.alpha = isFlipped ? 1.0f : 0.0f;
                 _backCanvasGroup.alpha = isFlipped ? 0.0f : 1.0f;
             }

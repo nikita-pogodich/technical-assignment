@@ -21,7 +21,7 @@ namespace ViewInterfaces
             IResourcesManager resourcesManager,
             IAudioManager audioManager);
 
-        void SetFlipped(bool isFlipped, bool isInstantly = false);
+        UniTask SetFlippedAsync(bool isFlipped, CancellationToken cancellationToken, bool isPlayHideSound = false);
         void SetMatched(bool isMatched);
         void UpdatePosition();
     }

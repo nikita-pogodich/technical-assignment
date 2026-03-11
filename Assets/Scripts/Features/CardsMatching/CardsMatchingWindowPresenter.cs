@@ -119,12 +119,8 @@ namespace Features.CardsMatching
                     CreateCardsAsync().Forget();
                     View.SetStageIndex(Model.CurrentStageIndex);
                     break;
-                case GameState.Remembering:
-                    View.SetAllCardsFilled(isFlipped: true, isInstantly: true);
-                    break;
                 case GameState.Matching:
-                    _audioManager.PlaySound(_localSettings.ResourceNames.CardFlipSound);
-                    View.SetAllCardsFilled(isFlipped: false, isInstantly: false);
+                    View.HideAllCardsAsync(_cancellationTokenSource.Token).Forget();
                     break;
                 case GameState.StageCompleted:
                     Model.StartNextStage();

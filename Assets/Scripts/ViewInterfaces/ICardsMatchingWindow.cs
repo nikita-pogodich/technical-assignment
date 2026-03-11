@@ -14,9 +14,9 @@ namespace ViewInterfaces
         void InjectDependencies(ILocalSettings localSettings);
         void AddCard(ICardView cardView);
         void UpdateCardPositions();
-        void SetAllCardsFilled(bool isFlipped, bool isInstantly);
         void ClearCards();
         void SetStageIndex(int stageIndex);
         UniTask DealCardsAsync(CancellationToken cancellationToken);
+        UniTask HideAllCardsAsync(CancellationToken cancellationToken);
     }
 }

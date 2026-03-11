@@ -5,6 +5,7 @@ namespace Settings
         string WindowRoots { get; }
         string MainThemeSong { get; }
         string CardFlipSound { get; }
+        string CardHideSound { get; }
         string CardMatchedSound { get; }
         string CardMismatchedSound { get; }
         string VictorySound { get; }

@@ -29,3 +29,5 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: f75178db78ee6804c8710de57513c216, type: 3}
   - Key: ComboMultiplier_Lost
     Clip: {fileID: 8300000, guid: 0c1bc720f32a59c46b294c5ad7ba98f6, type: 3}
+  - Key: Card_Hide
+    Clip: {fileID: 8300000, guid: c8bfbb29a83d3f34587a398215cae025, type: 3}

@@ -44,6 +44,9 @@ namespace Views.CardsMatchingWindow
         private readonly List<ICardView> _cardViews = new();
         private ILocalSettings _localSettings;
 
+        private readonly List<UniTask> _cardsDealingTasks = new();
+        private readonly List<UniTask> _cardsHidingTasks = new();
+
         public Observable<Unit> BackToMainMenu => _exitGame;
 
         public void InjectDependencies(ILocalSettings localSettings)
@@ -84,14 +87,6 @@ namespace Views.CardsMatchingWindow
             }
         }
 
-        public void SetAllCardsFilled(bool isFlipped, bool isInstantly)
-        {
-            foreach (ICardView cardView in _cardViews)
-            {
-                cardView.SetFlipped(isFlipped, isInstantly);
-            }
-        }
-
         public void ClearCards()
         {
             _cardViews.Clear();
@@ -111,8 +106,6 @@ namespace Views.CardsMatchingWindow
             _content.sizeDelta = new Vector2(stageSetting.GridWidth, _content.sizeDelta.y);
         }
 
-        private readonly List<UniTask> _cardsDealingTasks = new();
-
         public async UniTask DealCardsAsync(CancellationToken cancellationToken)
         {
             _cardsDealingTasks.Clear();
@@ -125,6 +118,21 @@ namespace Views.CardsMatchingWindow
             }
 
             await UniTask.WhenAll(_cardsDealingTasks);
+        }
+
+        public async UniTask HideAllCardsAsync(CancellationToken cancellationToken)
+        {
+            _cardsHidingTasks.Clear();
+
+            foreach (ICardView cardView in _cardViews)
+            {
+                _cardsHidingTasks.Add(cardView.SetFlippedAsync(
+                    isFlipped: false,
+                    cancellationToken, 
+                    isPlayHideSound: true));
+            }
+
+            await UniTask.WhenAll(_cardsHidingTasks);
         }
 
         public void SetScore(int score)

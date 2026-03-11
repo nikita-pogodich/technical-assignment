@@ -16,6 +16,9 @@ namespace Settings
         public string CardFlipSound { get; private set; } = "Card_Flip";
 
         [field: SerializeField]
+        public string CardHideSound { get; private set; } = "Card_Hide";
+
+        [field: SerializeField]
         public string CardMatchedSound { get; private set; } = "Match";
 
         [field: SerializeField]

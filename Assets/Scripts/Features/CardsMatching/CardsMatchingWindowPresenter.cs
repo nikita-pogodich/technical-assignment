@@ -119,8 +119,8 @@ namespace Features.CardsMatching
                     CreateCardsAsync().Forget();
                     View.SetStageIndex(Model.CurrentStageIndex);
                     break;
-                case GameState.Matching:
-                    View.HideAllCardsAsync(_cancellationTokenSource.Token).Forget();
+                case GameState.CardsHiding:
+                    HideCardsAsync().Forget();
                     break;
                 case GameState.StageCompleted:
                     Model.StartNextStage();
@@ -135,6 +135,12 @@ namespace Features.CardsMatching
                     SetShown(false);
                     break;
             }
+        }
+
+        private async UniTaskVoid HideCardsAsync()
+        {
+            await View.HideAllCardsAsync(_cancellationTokenSource.Token);
+            Model.CompleteCardsHiding();
         }
 
         private void OnBeforeStagesCompletedWindowShow(StagesCompletedWindowModel model)

@@ -24,6 +24,7 @@ MonoBehaviour:
     <WindowRoots>k__BackingField: WindowRoots
     <MainThemeSong>k__BackingField: Main_Theme
     <CardFlipSound>k__BackingField: Card_Flip
+    <CardHideSound>k__BackingField: Card_Hide
     <CardMatchedSound>k__BackingField: Match
     <CardMismatchedSound>k__BackingField: Mismatch
     <VictorySound>k__BackingField: Victory

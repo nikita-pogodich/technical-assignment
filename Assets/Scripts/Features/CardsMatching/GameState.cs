@@ -5,6 +5,7 @@
         GameEnded,
         CardsCreation,
         Remembering,
+        CardsHiding,
         Matching,
         StageCompleted,
         AllStagesCompleted

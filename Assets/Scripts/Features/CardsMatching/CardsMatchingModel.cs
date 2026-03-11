@@ -30,11 +30,13 @@ namespace Features.CardsMatching
         private readonly Stack<int> _availableCardIndices = new();
         private readonly List<CardModel> _flippedCards = new();
         private readonly List<CardModel> _matchedCards = new();
+        private readonly List<CardModel> _resettingMismatchedCards = new();
         private readonly Random _random = new();
 
         private int _cardsMatchedAmount = 0;
         private CompositeDisposable _cardsSelectionDisposable = new();
         private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _mismatchedCardsResettingCancellationTokenSource;
 
         public IReadOnlyDictionary<int, CardModel> CurrentCardModelByPositions => _currentCardModelByPositions;
         public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
@@ -71,9 +73,7 @@ namespace Features.CardsMatching
 
         protected override void OnDeinit()
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            DisposeCancellationTokens();
         }
 
         public void StartNewGame()
@@ -111,6 +111,7 @@ namespace Features.CardsMatching
 
         public void EndGame()
         {
+            DisposeCancellationTokens();
             _cardsSelectionDisposable?.Dispose();
             _currentGameState.Value = GameState.GameEnded;
         }
@@ -124,6 +125,11 @@ namespace Features.CardsMatching
                 gameSettingsStageSetting.TimeToRememberCardsSeconds,
                 cancellationToken: _cancellationTokenSource.Token);
 
+            _currentGameState.Value = GameState.CardsHiding;
+        }
+
+        public void CompleteCardsHiding()
+        {
             _currentGameState.Value = GameState.Matching;
         }
 
@@ -141,7 +147,8 @@ namespace Features.CardsMatching
         {
             _cardsMatchedAmount = 0;
 
-            _cancellationTokenSource?.Cancel();
+            DisposeCancellationTokens();
+
             _cancellationTokenSource = new CancellationTokenSource();
             _cardsSelectionDisposable?.Dispose();
             _cardsSelectionDisposable = new CompositeDisposable();
@@ -213,6 +220,15 @@ namespace Features.CardsMatching
                 return;
             }
 
+            if (_resettingMismatchedCards.Count > 0)
+            {
+                _mismatchedCardsResettingCancellationTokenSource?.Cancel();
+                _mismatchedCardsResettingCancellationTokenSource?.Dispose();
+                _mismatchedCardsResettingCancellationTokenSource = null;
+
+                ResetMismatchedCards();
+            }
+
             cardModel.IsFlipped.Value = true;
             _flippedCards.Add(cardModel);
 
@@ -225,10 +241,14 @@ namespace Features.CardsMatching
                 }
                 else
                 {
-                    CardModel[] cardsToReset = _flippedCards.ToArray();
+                    _resettingMismatchedCards.Clear();
+                    _resettingMismatchedCards.AddRange(_flippedCards);
+
                     _matchedCards.Clear();
                     _flippedCards.Clear();
-                    ResetMismatchedCardsAsync(cardsToReset).Forget();
+
+                    _mismatchedCardsResettingCancellationTokenSource = new CancellationTokenSource();
+                    ResetMismatchedCardsAsync().Forget();
 
                     if (_comboMultiplier.Value > 1)
                     {
@@ -327,16 +347,34 @@ namespace Features.CardsMatching
             _currentGameState.Value = GameState.AllStagesCompleted;
         }
 
-        private async UniTaskVoid ResetMismatchedCardsAsync(CardModel[] cardsToReset)
+        private async UniTaskVoid ResetMismatchedCardsAsync()
         {
             await UniTask.WaitForSeconds(
                 _localSettings.GameSettings.TimeToResetMismatchedCardsSeconds,
-                cancellationToken: _cancellationTokenSource.Token);
+                cancellationToken: _mismatchedCardsResettingCancellationTokenSource.Token);
 
-            foreach (CardModel cardModel in cardsToReset)
+            ResetMismatchedCards();
+        }
+
+        private void ResetMismatchedCards()
+        {
+            foreach (CardModel cardModel in _resettingMismatchedCards)
             {
                 cardModel.IsFlipped.Value = false;
             }
+
+            _resettingMismatchedCards.Clear();
+        }
+
+        private void DisposeCancellationTokens()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+
+            _mismatchedCardsResettingCancellationTokenSource?.Cancel();
+            _mismatchedCardsResettingCancellationTokenSource?.Dispose();
+            _mismatchedCardsResettingCancellationTokenSource = null;
         }
 
         private void ShuffleList(List<int> list)

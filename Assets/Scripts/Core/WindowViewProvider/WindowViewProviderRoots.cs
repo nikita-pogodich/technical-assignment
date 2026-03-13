@@ -34,6 +34,7 @@ namespace Core.WindowViewProvider
             DisposableBuilder disposableBuilder = Disposable.CreateBuilder();
 
             _orientationDetector.Orientation.Subscribe(OnOrientationChanged).AddTo(ref disposableBuilder);
+            _orientationDetector.IsWideScreen.Subscribe(OnOrientationChanged).AddTo(ref disposableBuilder);
             _reactiveDisposable = disposableBuilder.Build();
         }
 
@@ -42,12 +43,26 @@ namespace Core.WindowViewProvider
             _reactiveDisposable?.Dispose();
         }
 
-        private void OnOrientationChanged(Orientation orientation)
+        private void OnOrientationChanged(bool _) => OnOrientationChanged();
+        private void OnOrientationChanged(Orientation _) => OnOrientationChanged();
+
+        private void OnOrientationChanged()
         {
-            switch (orientation)
+            switch (_orientationDetector.Orientation.CurrentValue)
             {
                 case Orientation.Landscape:
-                    _canvasScaler.matchWidthOrHeight = _localSettings.GameSettings.LandscapeCanvasScalerMatch;
+                    float resultMatch;
+
+                    if (_orientationDetector.IsWideScreen.CurrentValue)
+                    {
+                        resultMatch = _localSettings.GameSettings.LandscapeWidescreenCanvasScalerMatch;
+                    }
+                    else
+                    {
+                        resultMatch = _localSettings.GameSettings.LandscapeCanvasScalerMatch;
+                    }
+
+                    _canvasScaler.matchWidthOrHeight = resultMatch;
                     break;
                 case Orientation.Portrait:
                     _canvasScaler.matchWidthOrHeight = _localSettings.GameSettings.PortraitCanvasScalerMatch;

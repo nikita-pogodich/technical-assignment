@@ -22,6 +22,7 @@ namespace Settings
         float LandscapeGridHeight { get; }
         float PortraitGridHeight { get; }
         float LandscapeCanvasScalerMatch { get; }
+        float LandscapeWidescreenCanvasScalerMatch { get; }
         float PortraitCanvasScalerMatch { get; }
     }
 }

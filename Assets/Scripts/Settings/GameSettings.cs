@@ -56,7 +56,10 @@ namespace Settings
         public float PortraitGridHeight { get; private set; } = 1580.0f;
 
         [field: SerializeField]
-        public float LandscapeCanvasScalerMatch { get; private set; } = 1.0f;
+        public float LandscapeCanvasScalerMatch { get; private set; } = 0.0f;
+
+        [field: SerializeField]
+        public float LandscapeWidescreenCanvasScalerMatch { get; private set; } = 1.0f;
 
         [field: SerializeField]
         public float PortraitCanvasScalerMatch { get; private set; } = 0.5f;

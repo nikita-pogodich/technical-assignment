@@ -96,8 +96,9 @@ namespace Views.CardsMatchingWindow
             CancellationToken cancellationToken,
             bool isPlayHideSound = false)
         {
-            _flipSequence?.Kill();
+            transform.DOKill();
             _flipSequence = DOTween.Sequence();
+            _flipSequence.SetTarget(transform).ToUniTask(cancellationToken: cancellationToken).Forget();
 
             if (_isShown == false)
             {
@@ -153,11 +154,11 @@ namespace Views.CardsMatchingWindow
 
         public void SetMatched(bool isMatched)
         {
-            _matchedSequence?.Kill();
-            _matchedSequence = DOTween.Sequence();
-
             if (isMatched)
             {
+                _matchedSequence = DOTween.Sequence();
+                _matchedSequence.SetTarget(transform);
+
                 var rotationTween = _wrapperRectTransform
                     .DOLocalRotate(_matchedRotation, _matchedDuration)
                     .SetEase(_matchedEase);
@@ -200,8 +201,9 @@ namespace Views.CardsMatchingWindow
 
         public async UniTask DealCardAsync(Vector3 dealingOrigin, CancellationToken cancellationToken)
         {
-            _dealingSequence?.Kill();
+            transform.DOKill();
             _dealingSequence = DOTween.Sequence();
+            _dealingSequence.SetTarget(transform).ToUniTask(cancellationToken: cancellationToken).Forget();
 
             _wrapperRectTransform.position = dealingOrigin;
             _wrapperRectTransform.localEulerAngles = Vector3.zero;
@@ -250,9 +252,7 @@ namespace Views.CardsMatchingWindow
 
         protected override void OnDeinit()
         {
-            _flipSequence?.Kill();
-            _matchedSequence?.Kill();
-            _dealingSequence?.Kill();
+            transform.DOKill();
         }
 
         private void OnSelect(Unit _)
